@@ -1,0 +1,47 @@
+{
+  "name": "@enymo/glide",
+  "version": "0.0.0",
+  "description": "React UI Framework",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "tsup": {
+    "entry": [
+      "src/js/index.ts"
+    ],
+    "format": [
+      "esm",
+      "cjs"
+    ],
+    "dts": true
+  },
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enymo/glide.git"
+  },
+  "author": "enymo GmbH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/enymo/glide/issues"
+  },
+  "homepage": "https://github.com/enymo/glide#readme",
+  "devDependencies": {
+    "@types/react": "^18.2.21",
+    "postcss": "^8.4.29",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "@enymo/react-clickable-router": "^1.0.0",
+    "@enymo/react-form-component": "^1.5.4"
+  },
+  "dependencies": {
+    "classnames": "^2.3.2"
+  }
+}
