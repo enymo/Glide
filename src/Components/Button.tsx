@@ -2,7 +2,6 @@ import { Clickable, ClickableProps } from "@enymo/react-clickable-router";
 import { useDisabled, useLoading } from "@enymo/react-form-component";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
-import "../../css/button.css";
 import { Rule } from "../Stylesheet";
 import { ButtonVariantStyle, GlideButtonConfig } from "../types";
 
