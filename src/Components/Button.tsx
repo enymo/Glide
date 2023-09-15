@@ -3,10 +3,10 @@ import { useDisabled, useLoading } from "@enymo/react-form-component";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
 import { Rule } from "../Stylesheet";
-import { ButtonVariantStyle, GlideButtonConfig } from "../types";
+import { ButtonVariantStyle, GlideButtonConfig, WithoutPrivate } from "../types";
 
-interface ButtonProps<T extends string> extends ClickableProps {
-    variant?: T,
+export interface ButtonProps<T extends string> extends ClickableProps {
+    variant?: WithoutPrivate<T>,
     loading?: boolean,
     flex?: number
 }

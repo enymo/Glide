@@ -44,10 +44,11 @@ export class Stylesheet {
     }
 
     public apply() {
-        const style = document.createElement("style")
+        const style = document.createElement("style");
+        document.head.appendChild(style);
+        console.log(this.rules);
         for (const rule of this.rules) {
             rule.addToStylesheet(style.sheet!);
         }
-        document.head.appendChild(style);
     }
 }
