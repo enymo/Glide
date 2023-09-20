@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { Rule } from "../Stylesheet";
 import { GlideInputConfig, InputVariantStyle, WithoutPrivate } from "../types";
 
-export interface InputProps<T extends string> {
+export type InputProps<Variants extends string, InsidePrefixProps> = {
     name?: string,
     label?: string,
     className?: string,
@@ -14,11 +14,11 @@ export interface InputProps<T extends string> {
     onChange?: (value: string) => void,
     disabled?: boolean
     flex?: number,
-    variant?: WithoutPrivate<T>,
+    variant?: WithoutPrivate<Variants>,
     type: HTMLInputTypeAttribute | "textarea",
-}
+} & InsidePrefixProps
 
-export default <T extends string>(config: GlideInputConfig<T>, styleRule: Rule, glideClassName: string) => {
+export default <Variants extends string, InsidePrefixProps extends object>(config: GlideInputConfig<Variants, InsidePrefixProps>, styleRule: Rule, glideClassName: string) => {
     styleRule.setStyle({
         display: "flex",
         flexDirection: "column",
@@ -28,9 +28,9 @@ export default <T extends string>(config: GlideInputConfig<T>, styleRule: Rule, 
 
     const dependencies: { [variant: string]: string[] } = {}
 
-    for (const variant of Object.keys(config.variants) as T[]) {
+    for (const variant of Object.keys(config.variants) as Variants[]) {
         if (variant[0] !== ".") {
-            let cur: T | undefined = variant;
+            let cur: Variants | undefined = variant;
             while (cur) {
                 dependencies[cur] ??= [];
                 dependencies[cur].push(variant);
@@ -40,7 +40,7 @@ export default <T extends string>(config: GlideInputConfig<T>, styleRule: Rule, 
     }
     console.log(dependencies);
 
-    for (const [variant, variantConfig] of Object.entries<InputVariantStyle<T>>(config.variants)) {
+    for (const [variant, variantConfig] of Object.entries<InputVariantStyle<Variants, InsidePrefixProps>>(config.variants)) {
         const dependencyString = "&." + dependencies[variant].join(", &.");
         styleRule.addRule(dependencyString, variantConfig.inputStyle);
         styleRule.addRule(dependencyString + " .input-label", variantConfig.labelStyle);
@@ -70,7 +70,8 @@ export default <T extends string>(config: GlideInputConfig<T>, styleRule: Rule, 
         flex,
         variant = config.defaultVariant,
         type,
-    }: InputProps<T>) => {
+        ...props
+    }: InputProps<Variants, InsidePrefixProps>) => {
 
         const configVariant = config.variants[variant];
 
@@ -79,6 +80,9 @@ export default <T extends string>(config: GlideInputConfig<T>, styleRule: Rule, 
                 {label && configVariant.labelPosition == "outside-top" && (
                     <span className={classNames("input-label", "top-label")}>{label}</span>
                 )}
+                <div className="input-wrap">
+                    {config.insidePrefix?.element && React.createElement(config.insidePrefix.element, props as InsidePrefixProps)}
+                </div>
                 {type == "textarea" ? (
                     <textarea
                         className={classNames("input", {error})}

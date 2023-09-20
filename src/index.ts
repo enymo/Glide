@@ -5,7 +5,11 @@ import { GlideConfig } from "./types";
 
 let glideCount = 0;
 
-export const createGlide = <T extends string, U extends string>(config: GlideConfig<T, U>) => {
+export const createGlide = <
+    ButtonVariants extends string, 
+    InputVariants extends string, 
+    InputInsidePrefixProps extends object = never
+>(config: GlideConfig<ButtonVariants, InputVariants, InputInsidePrefixProps>) => {
     glideCount++;
     const style = new Stylesheet()
     const result = {
