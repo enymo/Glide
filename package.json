@@ -39,7 +39,8 @@
   },
   "peerDependencies": {
     "@enymo/react-clickable-router": "^1.0.0",
-    "@enymo/react-form-component": "^1.5.4"
+    "@enymo/react-form-component": "^1.5.4",
+    "react": ">=17.0.0"
   },
   "dependencies": {
     "classnames": "^2.3.2"

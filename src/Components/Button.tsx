@@ -2,8 +2,10 @@ import { Clickable, ClickableProps } from "@enymo/react-clickable-router";
 import { useDisabled, useLoading } from "@enymo/react-form-component";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
-import { Rule } from "../Stylesheet";
+import { Rule, Stylesheet } from "../Stylesheet";
 import { ButtonVariantStyle, GlideButtonConfig, WithoutPrivate } from "../types";
+
+let glideCounter = 0;
 
 export interface ButtonProps<T extends string> extends ClickableProps {
     variant?: WithoutPrivate<T>,
@@ -11,10 +13,12 @@ export interface ButtonProps<T extends string> extends ClickableProps {
     flex?: number
 }
 
-export default <T extends string>(config: GlideButtonConfig<T>, styleRule: Rule, glideClassName: string) => {
-    styleRule.setStyle(config.style),
-    styleRule.addRule("&:hover", config.hoverStyle);
-    styleRule.addRule("&:active", config.clickStyle);
+export default <T extends string>(config: GlideButtonConfig<T>) => {
+    const glideClassName = `glide-button-${++glideCounter}`;
+    const style = new Stylesheet();
+    const rule = style.addRule(`.${glideClassName}`, config.style);
+    rule.addRule("&:hover", config.hoverStyle);
+    rule.addRule("&:active", config.clickStyle);
 
     const dependencies: {[variant: string]: string[]} = {}
 
@@ -30,10 +34,12 @@ export default <T extends string>(config: GlideButtonConfig<T>, styleRule: Rule,
     }
 
     for (const [variant, variantConfig] of Object.entries<ButtonVariantStyle<T>>(config.variants)) {
-        const rule = new Rule(dependencies[variant], variantConfig.style);
-        rule.addRule("&:hover", variantConfig.hoverStyle);
-        rule.addRule("&:active", variantConfig.clickStyle);
+        const variantRule = rule.addRule(dependencies[variant].map(variant => `&.${variant}`), variantConfig.style);
+        variantRule.addRule("&:hover", variantConfig.hoverStyle);
+        variantRule.addRule("&:active", variantConfig.clickStyle);
     }
+
+    style.apply();
 
     return ({
         className,

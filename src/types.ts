@@ -13,12 +13,12 @@ export interface ButtonVariantStyle<Variants extends string> extends ButtonStyle
 }
 
 export interface GlideButtonConfig<Variants extends string> extends ButtonStyle {
-    variants?: Record<Variants, ButtonVariantStyle<Variants>>,
-    defaultVariant?: WithoutPrivate<Copy<Variants>>,
+    variants: Record<Variants, ButtonVariantStyle<Variants>>,
+    defaultVariant: WithoutPrivate<Copy<Variants>>,
     loader: React.ReactNode
 }
 
-interface InputStyle<InsidePrefixProps> {
+export interface GlideInputConfig<InsidePrefixProps> {
     labelPosition: "outside-top" | "outside-left" | "inside-top" | "placeholder" | "none",
     labelStyle: React.CSSProperties,
     labelGap?: number,
@@ -31,22 +31,4 @@ interface InputStyle<InsidePrefixProps> {
         padding?: string,
         element?: React.FC<InsidePrefixProps>
     }
-}
-
-export interface InputVariantStyle<Variants extends string, InsidePrefixProps> extends InputStyle<InsidePrefixProps> {
-    extends?: Copy<Variants>
-}
-
-export interface GlideInputConfig<Variants extends string, InsidePrefixProps> extends InputStyle<InsidePrefixProps> {
-    variants?: Record<Variants, InputVariantStyle<Variants, InsidePrefixProps>>,
-    defaultVariant?: WithoutPrivate<Copy<Variants>>
-}
-
-export interface GlideConfig<
-    ButtonVariants extends string, 
-    InputVariants extends string,
-    InputInsidePrefixProps
-> {
-    buttons: GlideButtonConfig<ButtonVariants>,
-    inputs: GlideInputConfig<InputVariants, InputInsidePrefixProps>
 }
