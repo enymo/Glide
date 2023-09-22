@@ -35,7 +35,7 @@ export class Rule {
 }
 
 export class Stylesheet {
-    private rules: Rule[] = []
+    private rules: Rule[] = [];
 
     public addRule(selectors: string[] | string, style: React.CSSProperties = {}) {
         const rule = new Rule(selectors, style);

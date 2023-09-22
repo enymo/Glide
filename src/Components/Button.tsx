@@ -2,8 +2,34 @@ import { Clickable, ClickableProps } from "@enymo/react-clickable-router";
 import { useDisabled, useLoading } from "@enymo/react-form-component";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
-import { Rule, Stylesheet } from "../Stylesheet";
+import { Stylesheet } from "../Stylesheet";
 import { ButtonVariantStyle, GlideButtonConfig, WithoutPrivate } from "../types";
+
+const globalStyle = new Stylesheet();
+
+const buttonRule = globalStyle.addRule(".glide-button", {
+    position: "relative"
+});
+buttonRule.addRule(".loading-wrap", {
+    display: "none",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center"
+});
+
+const loadingButtonRule = globalStyle.addRule("&.loading");
+loadingButtonRule.addRule(".content", {
+    visibility: "hidden"
+});
+loadingButtonRule.addRule(".loading-wrap", {
+    display: "flex"
+});
+
+globalStyle.apply();
 
 let glideCounter = 0;
 
@@ -19,6 +45,9 @@ export default <T extends string>(config: GlideButtonConfig<T>) => {
     const rule = style.addRule(`.${glideClassName}`, config.style);
     rule.addRule("&:hover", config.hoverStyle);
     rule.addRule("&:active", config.clickStyle);
+    rule.addRule(".loader-wrap", {
+        padding: config.loaderPadding
+    });
 
     const dependencies: {[variant: string]: string[]} = {}
 

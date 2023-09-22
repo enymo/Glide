@@ -3,7 +3,7 @@ export type Copy<T> = T extends infer K ? K extends T ? K : never : never; // Ty
 export type WithoutPrivate<T extends string> = T extends `${"."}${infer _}` ? never : T;
 
 interface ButtonStyle {
-    style: React.CSSProperties,
+    style?: React.CSSProperties,
     hoverStyle?: React.CSSProperties,
     clickStyle?: React.CSSProperties
 }
@@ -15,7 +15,8 @@ export interface ButtonVariantStyle<Variants extends string> extends ButtonStyle
 export interface GlideButtonConfig<Variants extends string> extends ButtonStyle {
     variants: Record<Variants, ButtonVariantStyle<Variants>>,
     defaultVariant: WithoutPrivate<Copy<Variants>>,
-    loader: React.ReactNode
+    loader: React.ReactNode,
+    loaderPadding?: string
 }
 
 export interface GlideInputConfig<InsidePrefixProps> {
