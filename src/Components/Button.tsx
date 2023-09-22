@@ -43,8 +43,9 @@ export default <T extends string>(config: GlideButtonConfig<T>) => {
     const glideClassName = `glide-button-${++glideCounter}`;
     const style = new Stylesheet();
     const rule = style.addRule(`.${glideClassName}`, config.style);
-    rule.addRule("&:hover", config.hoverStyle);
-    rule.addRule("&:active", config.clickStyle);
+    rule.addRule("&:hover:not(.disabled)", config.hoverStyle);
+    rule.addRule("&:active:not(.disabled)", config.clickStyle);
+    rule.addRule("&.disabled", config.disabledStyle);
     rule.addRule(".loader-wrap", {
         padding: config.loaderPadding
     });

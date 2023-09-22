@@ -5,7 +5,8 @@ export type WithoutPrivate<T extends string> = T extends `${"."}${infer _}` ? ne
 interface ButtonStyle {
     style?: React.CSSProperties,
     hoverStyle?: React.CSSProperties,
-    clickStyle?: React.CSSProperties
+    clickStyle?: React.CSSProperties,
+    disabledStyle?: React.CSSProperties
 }
 
 export interface ButtonVariantStyle<Variants extends string> extends ButtonStyle {
