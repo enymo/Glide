@@ -28,16 +28,20 @@ export interface ButtonVariantStyle<Variants extends string> extends ButtonStyle
     extends?: Copy<Variants>
 }
 
-export interface GlideButtonConfig<Variants extends string> extends ButtonStyle {
+export interface DefaultElementProps {
+    children: React.ReactNode
+}
+
+export interface GlideButtonConfig<Variants extends string, ElementProps extends DefaultElementProps> extends ButtonStyle {
     /**
      * A list of variants for the button. A variant can be marked private by prefixing it with a dot.
      * Private variants may be extended, but the do not show up a options for the 'variant'-prop of the button.
      */
-    variants: Record<Variants, ButtonVariantStyle<Variants>>,
+    variants?: Record<Variants, ButtonVariantStyle<Variants>>,
     /**
      * The variant to be used if the 'variant'-prop is omitted
      */
-    defaultVariant: WithoutPrivate<Copy<Variants>>,
+    defaultVariant?: WithoutPrivate<Copy<Variants>>,
     /**
      * A component to be displayed in the button when its in its loading state,
      */
@@ -45,7 +49,11 @@ export interface GlideButtonConfig<Variants extends string> extends ButtonStyle 
     /**
      * A separate padding for the loader may be specified
      */
-    loaderPadding?: string
+    loaderPadding?: string,
+    /**
+     * React component to render the buttons content. 'children' prop is passed by default and any additional props are added to the button.
+     */
+    element?: React.FC<ElementProps>
 }
 
 export interface GlideInputConfig<PrefixProps, SuffixProps> {

@@ -3,7 +3,7 @@ import { useDisabled, useLoading } from "@enymo/react-form-component";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
 import { Stylesheet } from "../Stylesheet";
-import { ButtonVariantStyle, GlideButtonConfig, WithoutPrivate } from "../types";
+import { ButtonVariantStyle, DefaultElementProps, GlideButtonConfig, WithoutPrivate } from "../types";
 
 const globalStyle = new Stylesheet();
 
@@ -33,13 +33,13 @@ globalStyle.apply();
 
 let glideCounter = 0;
 
-export interface ButtonProps<T extends string> extends ClickableProps {
-    variant?: WithoutPrivate<T>,
+export interface ButtonProps<Variants extends string> extends ClickableProps {
+    variant?: WithoutPrivate<Variants>,
     loading?: boolean,
     flex?: number
 }
 
-export default <T extends string>(config: GlideButtonConfig<T>) => {
+export default <Variants extends string, ElementProps extends DefaultElementProps>(config: GlideButtonConfig<Variants, ElementProps>) => {
     const glideClassName = `glide-button-${++glideCounter}`;
     const style = new Stylesheet();
     const rule = style.addRule(`.${glideClassName}`, config.style);
@@ -52,21 +52,23 @@ export default <T extends string>(config: GlideButtonConfig<T>) => {
 
     const dependencies: {[variant: string]: string[]} = {}
 
-    for (const variant of Object.keys(config.variants) as T[]) {
-        if (variant[0] !== ".") {
-            let cur: T | undefined = variant;
-            while (cur) {
-                dependencies[cur] ??= [];
-                dependencies[cur].push(variant);
-                cur = config.variants[cur].extends
+    if (config.variants) {
+        for (const variant of Object.keys(config.variants) as Variants[]) {
+            if (variant[0] !== ".") {
+                let cur: Variants | undefined = variant;
+                while (cur) {
+                    dependencies[cur] ??= [];
+                    dependencies[cur].push(variant);
+                    cur = config.variants[cur].extends
+                }
             }
         }
-    }
 
-    for (const [variant, variantConfig] of Object.entries<ButtonVariantStyle<T>>(config.variants)) {
-        const variantRule = rule.addRule(dependencies[variant].map(variant => `&.${variant}`), variantConfig.style);
-        variantRule.addRule("&:hover", variantConfig.hoverStyle);
-        variantRule.addRule("&:active", variantConfig.clickStyle);
+        for (const [variant, variantConfig] of Object.entries<ButtonVariantStyle<Variants>>(config.variants)) {
+            const variantRule = rule.addRule(dependencies[variant].map(variant => `&.${variant}`), variantConfig.style);
+            variantRule.addRule("&:hover", variantConfig.hoverStyle);
+            variantRule.addRule("&:active", variantConfig.clickStyle);
+        }
     }
 
     style.apply();
@@ -82,7 +84,7 @@ export default <T extends string>(config: GlideButtonConfig<T>) => {
         style,
         children,
         ...props
-    }: ButtonProps<T>) => {
+    }: ButtonProps<Variants>) => {
         const disabledContext = useDisabled();
         const loadingContext = useLoading();
         const [loadingState, setLoadingState] = useState(false);
