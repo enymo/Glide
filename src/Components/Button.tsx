@@ -83,8 +83,10 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
         flex,
         style,
         children,
+        to,
+        linkType,
         ...props
-    }: ButtonProps<Variants>) => {
+    }: ButtonProps<Variants> & ElementProps) => {
         const disabledContext = useDisabled();
         const loadingContext = useLoading();
         const [loadingState, setLoadingState] = useState(false);
@@ -108,7 +110,7 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
                 {...props}
             >
                 <div className="content">
-                    {children}
+                    {config.element ? React.createElement(config.element, {children, ...props} as ElementProps) : children}
                 </div>
                 <div className="loading-wrap">
                     {config.loader}
