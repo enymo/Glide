@@ -3,22 +3,64 @@ export type Copy<T> = T extends infer K ? K extends T ? K : never : never; // Ty
 export type WithoutPrivate<T extends string> = T extends `${"."}${infer _}` ? never : T;
 
 interface ButtonStyle {
-    style: React.CSSProperties,
+    /**
+     * The main style of the button
+     */
+    style?: React.CSSProperties,
+    /**
+     * Style overrides to be applied when the button is being hovered over
+     */
     hoverStyle?: React.CSSProperties,
-    clickStyle?: React.CSSProperties
+    /**
+     * Style overrides to be applied when the button is clicked
+     */
+    clickStyle?: React.CSSProperties,
+    /**
+     * Style overrides to be applied when the button is disabled
+     */
+    disabledStyle?: React.CSSProperties
 }
 
 export interface ButtonVariantStyle<Variants extends string> extends ButtonStyle {
+    /**
+     * The variant that the current variant extends. All styles of the extended variant are also applied to the current variant
+     */
     extends?: Copy<Variants>
 }
 
-export interface GlideButtonConfig<Variants extends string> extends ButtonStyle {
-    variants: Record<Variants, ButtonVariantStyle<Variants>>,
-    defaultVariant: WithoutPrivate<Copy<Variants>>,
-    loader: React.ReactNode
+export interface DefaultElementProps {
+    children: React.ReactNode
+}
+
+export interface GlideButtonConfig<Variants extends string, ElementProps extends DefaultElementProps> extends ButtonStyle {
+    /**
+     * A list of variants for the button. A variant can be marked private by prefixing it with a dot.
+     * Private variants may be extended, but the do not show up a options for the 'variant'-prop of the button.
+     */
+    variants?: Record<Variants, ButtonVariantStyle<Variants>>,
+    /**
+     * The variant to be used if the 'variant'-prop is omitted
+     */
+    defaultVariant?: WithoutPrivate<Copy<Variants>>,
+    /**
+     * A component to be displayed in the button when its in its loading state,
+     */
+    loader: React.ReactNode,
+    /**
+     * A separate padding for the loader may be specified
+     */
+    loaderPadding?: string,
+    /**
+     * React component to render the buttons content. 'children' prop is passed by default and any additional props are added to the button.
+     */
+    element?: React.FC<ElementProps>
 }
 
 export interface GlideInputConfig<PrefixProps, SuffixProps> {
+    /**
+     * Class(es) to always be added to this input
+     */
+    className?: string
     /**
      * The style of the input wrapper. This is what you would normally use to style the input.
      */

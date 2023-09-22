@@ -1,10 +1,10 @@
-import React, { HTMLInputTypeAttribute, useEffect, useRef } from "react";
+import { useDisabled } from "@enymo/react-form-component";
 import classNames from "classnames";
+import _ from "lodash";
+import React, { HTMLInputTypeAttribute, useCallback, useRef } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 import { Stylesheet } from "../Stylesheet";
 import { GlideInputConfig } from "../types";
-import { FieldError, RegisterOptions, useFormContext } from "react-hook-form";
-import _ from "lodash";
-import { useDisabled } from "@enymo/react-form-component";
 
 let glideCounter = 0;
 
@@ -92,7 +92,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
     inputLabelWrapRule.addRule(".input::placeholder", config.labelPosition == "placeholder" ? config.labelStyle : config.placeholderStyle);
     
     inputWrapRule.addRule("&:hover", config.hoverStyle);
-    inputWrapRule.addRule("&:has(.input:focus):not(.error)", config.focusStyle);
+    inputWrapRule.addRule("&:focus-within:not(.error)", config.focusStyle);
     inputWrapRule.addRule("&.error", config.errorStyle);
     inputWrapRule.addRule("&.disabled", config.disabledStyle);
 
@@ -131,7 +131,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
     }: InputProps<PrefixProps, SuffixProps>) => {
 
         const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>();
-        const handleWrapperClick = () => inputRef.current?.focus();
+        const handleWrapperClick = useCallback(() => inputRef.current?.focus(), [inputRef]);
         
         const form = useFormContext();
         const disabledContext = useDisabled();
@@ -141,7 +141,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         const { ref: registerRef, ...register } = name && form ? form.register(name, disabled ? undefined : options) : { ref: undefined };
 
         return (
-            <div className={classNames(glideClassName, className)} style={{ flex, ...style }}>
+            <div className={classNames(glideClassName, config.className, className)} style={{ flex, ...style }}>
                 {label && config.labelPosition == "outside-top" && (
                     <span className={classNames("input-label", "outside-top-label")}>{label}</span>
                 )}

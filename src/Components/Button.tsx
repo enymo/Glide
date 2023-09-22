@@ -2,41 +2,73 @@ import { Clickable, ClickableProps } from "@enymo/react-clickable-router";
 import { useDisabled, useLoading } from "@enymo/react-form-component";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
-import { Rule, Stylesheet } from "../Stylesheet";
-import { ButtonVariantStyle, GlideButtonConfig, WithoutPrivate } from "../types";
+import { Stylesheet } from "../Stylesheet";
+import { ButtonVariantStyle, DefaultElementProps, GlideButtonConfig, WithoutPrivate } from "../types";
+
+const globalStyle = new Stylesheet();
+
+const buttonRule = globalStyle.addRule(".glide-button", {
+    position: "relative"
+});
+buttonRule.addRule(".loading-wrap", {
+    display: "none",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center"
+});
+
+const loadingButtonRule = globalStyle.addRule("&.loading");
+loadingButtonRule.addRule(".content", {
+    visibility: "hidden"
+});
+loadingButtonRule.addRule(".loading-wrap", {
+    display: "flex"
+});
+
+globalStyle.apply();
 
 let glideCounter = 0;
 
-export interface ButtonProps<T extends string> extends ClickableProps {
-    variant?: WithoutPrivate<T>,
+export interface ButtonProps<Variants extends string> extends ClickableProps {
+    variant?: WithoutPrivate<Variants>,
     loading?: boolean,
     flex?: number
 }
 
-export default <T extends string>(config: GlideButtonConfig<T>) => {
+export default <Variants extends string, ElementProps extends DefaultElementProps>(config: GlideButtonConfig<Variants, ElementProps>) => {
     const glideClassName = `glide-button-${++glideCounter}`;
     const style = new Stylesheet();
     const rule = style.addRule(`.${glideClassName}`, config.style);
-    rule.addRule("&:hover", config.hoverStyle);
-    rule.addRule("&:active", config.clickStyle);
+    rule.addRule("&:hover:not(.disabled)", config.hoverStyle);
+    rule.addRule("&:active:not(.disabled)", config.clickStyle);
+    rule.addRule("&.disabled", config.disabledStyle);
+    rule.addRule(".loader-wrap", {
+        padding: config.loaderPadding
+    });
 
     const dependencies: {[variant: string]: string[]} = {}
 
-    for (const variant of Object.keys(config.variants) as T[]) {
-        if (variant[0] !== ".") {
-            let cur: T | undefined = variant;
-            while (cur) {
-                dependencies[cur] ??= [];
-                dependencies[cur].push(variant);
-                cur = config.variants[cur].extends
+    if (config.variants) {
+        for (const variant of Object.keys(config.variants) as Variants[]) {
+            if (variant[0] !== ".") {
+                let cur: Variants | undefined = variant;
+                while (cur) {
+                    dependencies[cur] ??= [];
+                    dependencies[cur].push(variant);
+                    cur = config.variants[cur].extends
+                }
             }
         }
-    }
 
-    for (const [variant, variantConfig] of Object.entries<ButtonVariantStyle<T>>(config.variants)) {
-        const variantRule = rule.addRule(dependencies[variant].map(variant => `&.${variant}`), variantConfig.style);
-        variantRule.addRule("&:hover", variantConfig.hoverStyle);
-        variantRule.addRule("&:active", variantConfig.clickStyle);
+        for (const [variant, variantConfig] of Object.entries<ButtonVariantStyle<Variants>>(config.variants)) {
+            const variantRule = rule.addRule(dependencies[variant].map(variant => `&.${variant}`), variantConfig.style);
+            variantRule.addRule("&:hover", variantConfig.hoverStyle);
+            variantRule.addRule("&:active", variantConfig.clickStyle);
+        }
     }
 
     style.apply();
@@ -51,8 +83,10 @@ export default <T extends string>(config: GlideButtonConfig<T>) => {
         flex,
         style,
         children,
+        to,
+        linkType,
         ...props
-    }: ButtonProps<T>) => {
+    }: ButtonProps<Variants> & ElementProps) => {
         const disabledContext = useDisabled();
         const loadingContext = useLoading();
         const [loadingState, setLoadingState] = useState(false);
@@ -76,7 +110,7 @@ export default <T extends string>(config: GlideButtonConfig<T>) => {
                 {...props}
             >
                 <div className="content">
-                    {children}
+                    {config.element ? React.createElement(config.element, {children, ...props} as ElementProps) : children}
                 </div>
                 <div className="loading-wrap">
                     {config.loader}
