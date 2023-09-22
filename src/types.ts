@@ -88,3 +88,21 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> {
      */
     suffix?: React.FC<SuffixProps>,
 }
+
+export interface GlideCheckboxConfig {
+    wrapperStyle?: React.CSSProperties,
+    labelStyle?: React.CSSProperties,
+    checkmark: React.ReactNode,
+    style?: React.CSSProperties,
+    checkedStyle?: React.CSSProperties,
+    errorStyle?: React.CSSProperties,
+    disabledStyle?: React.CSSProperties,
+    errorTextStyle?: React.CSSProperties,
+    labelGap?: string,
+    errorGap?: string,
+    labelAlignment?: "flex-start" | "center" | "flex-end",
+    checkboxAlignment?: "flex-start" | "center" | "flex-end",
+    errorComponent?: React.FC<{ error: string }>,
+    labelPosition?: "left" | "right",
+    labelWrapperStyle?: React.CSSProperties,
+}
