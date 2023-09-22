@@ -141,7 +141,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         const { ref: registerRef, ...register } = name && form ? form.register(name, disabled ? undefined : options) : { ref: undefined };
 
         return (
-            <div className={classNames(glideClassName, className)} style={{ flex, ...style }}>
+            <div className={classNames(glideClassName, config.className, className)} style={{ flex, ...style }}>
                 {label && config.labelPosition == "outside-top" && (
                     <span className={classNames("input-label", "outside-top-label")}>{label}</span>
                 )}
