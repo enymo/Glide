@@ -83,9 +83,11 @@ export default (config: GlideCheckboxConfig) => {
     }: CheckboxProps) => {
         const listContext = useCheckboxList();
         const form = useFormContext();
-        const disabled = disabledProp ?? useDisabled() ?? false;
+        const disabledContext = useDisabled();
+        const disabled = disabledProp ?? disabledContext ?? false;
+        const errorContext = useCheckboxError();
         const error = errorProp ?? (
-            name ? (useCheckboxError() ?? _.get(form?.formState.errors, name!))?.message as string : undefined
+            name ? (errorContext ?? _.get(form?.formState.errors, name!))?.message as string : undefined
         );
 
         const { onChange: onChangeForm, ...register } = (name && form && !listContext) ? form.register(name, disabled ? undefined : options) : { onChange: undefined };

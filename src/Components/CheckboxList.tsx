@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext } from "react";
-import { FieldError, RegisterOptions, useController, useFormContext } from "react-hook-form";
+import { FieldError, RegisterOptions, useController, useForm, useFormContext } from "react-hook-form";
 
 const CheckboxListContext = createContext<{
     value: (string | number)[],
@@ -25,10 +25,10 @@ export function CheckboxList<T extends string | number>({
     options,
     children
 }: CheckboxListProps<T>) {
+    const {control: fallbackControl} = useForm();
     const form = useFormContext();
-    const { field: { onChange: internalOnChange, value: internalValue }, fieldState: { error } } = (name && form) ?
-        useController({ name, control: form.control, rules: options, defaultValue: [] }) :
-        { field: { onChange: undefined, value: undefined }, fieldState: { error: undefined } };
+    const { field: { onChange: internalOnChange, value: internalValue }, fieldState: { error } } = 
+        useController({ name: name ?? "", control: form?.control ?? fallbackControl, rules: options, defaultValue: [] });
     const value: T[] = form ? internalValue : externalValue;
 
     const onChange = useCallback((value: T[]) => {
