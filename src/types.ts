@@ -46,7 +46,7 @@ export interface GlideButtonConfig<Variants extends string, ElementProps extends
     /**
      * A component to be displayed in the button when its in its loading state,
      */
-    loader: React.ReactNode,
+    loader?: React.ReactNode,
     /**
      * A separate padding for the loader may be specified
      */

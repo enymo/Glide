@@ -92,7 +92,7 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
         const [loadingState, setLoadingState] = useState(false);
 
         const disabled = disabledProp ?? loadingProp ?? loadingState ?? disabledContext ?? loadingContext ?? false;
-        const loading = loadingProp ?? (submit && loadingContext) ?? loadingState;
+        const loading = config.loader ? (loadingProp ?? (submit && loadingContext) ?? loadingState ?? false) : false;
 
         const handleClick: React.MouseEventHandler = useCallback(async e => {
             setLoadingState(true);
