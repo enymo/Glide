@@ -29,6 +29,7 @@ export interface ButtonVariantStyle<Variants extends string> extends ButtonStyle
 }
 
 export interface DefaultElementProps {
+    variant?: string,
     children: React.ReactNode
 }
 
