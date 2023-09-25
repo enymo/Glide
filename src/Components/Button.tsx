@@ -83,8 +83,8 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
         flex,
         style,
         children,
-        to,
         linkType,
+        to,
         ...props
     }: ButtonProps<Variants> & ElementProps) => {
         const disabledContext = useDisabled();
@@ -107,6 +107,8 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
                 submit={submit}
                 onClick={handleClick}
                 style={{flex, ...style}}
+                linkType={linkType}
+                to={to}
                 {...props}
             >
                 <div className="content">
