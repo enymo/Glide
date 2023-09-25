@@ -71,7 +71,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         display: "flex",
         alignItems: "center",
     });
-    const inputWrapRule = inputRowRule.addRule(".input-wrap", {
+    const inputWrapRule = inputRowRule.addRule(".outer-input-wrap", {
         display: "flex",
         flex: 1,
         alignItems: "stretch",
@@ -83,14 +83,20 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         flex: 1,
         flexDirection: "column",
     });
+    inputLabelWrapRule.addRule(".inner-input-wrap", {
+        display: "flex",
+        flex: 1,
+        alignItems: "center",
+    });
     inputLabelWrapRule.addRule(".input", {
         border: "none",
         outline: "none",
         padding: config.inputPadding ?? "0",
         backgroundColor: "transparent",
+        flex: 1,
     });
     inputLabelWrapRule.addRule(".input::placeholder", config.labelPosition == "placeholder" ? config.labelStyle : config.placeholderStyle);
-    
+
     inputWrapRule.addRule("&:hover", config.hoverStyle);
     inputWrapRule.addRule("&:focus-within:not(.error)", config.focusStyle);
     inputWrapRule.addRule("&.error", config.errorStyle);
@@ -132,7 +138,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
 
         const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>();
         const handleWrapperClick = useCallback(() => inputRef.current?.focus(), [inputRef]);
-        
+
         const form = useFormContext();
         const disabledContext = useDisabled();
         const disabled = disabledProp ?? disabledContext ?? false;
@@ -149,26 +155,28 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
                     {label && config.labelPosition == "outside-left" && (
                         <span className={classNames("input-label", "outside-left-label")}>{label}</span>
                     )}
-                    <div className={classNames("input-wrap", { error, disabled })} onClick={handleWrapperClick}>
+                    <div className={classNames("outer-input-wrap", { error, disabled })} onClick={handleWrapperClick}>
                         {config.prefix && React.createElement(config.prefix, props as PrefixProps)}
                         <div className="inside-label-wrap">
                             {label && config.labelPosition == "inside-top" && (
                                 <span className={classNames("input-label", "inside-top-label")}>{label}</span>
                             )}
-                            {React.createElement(type == "textarea" ? "textarea" : "input", {
-                                ref: (e: HTMLInputElement | HTMLTextAreaElement) => {
-                                    registerRef?.(e);
-                                    inputRef.current = e;
-                                },
-                                className: classNames("input", { error }),
-                                type,
-                                name,
-                                placeholder: config.labelPosition == "placeholder" ? label : placeholder,
-                                value,
-                                onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange?.(e.target.value),
-                                disabled,
-                                ...register,
-                            })}
+                            <div className="inner-input-wrap">
+                                {React.createElement(type == "textarea" ? "textarea" : "input", {
+                                    ref: (e: HTMLInputElement | HTMLTextAreaElement) => {
+                                        registerRef?.(e);
+                                        inputRef.current = e;
+                                    },
+                                    className: classNames("input", { error }),
+                                    type,
+                                    name,
+                                    placeholder: config.labelPosition == "placeholder" ? label : placeholder,
+                                    value,
+                                    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange?.(e.target.value),
+                                    disabled,
+                                    ...register,
+                                })}
+                            </div>
                         </div>
                         {config.suffix && React.createElement(config.suffix, props as SuffixProps)}
                     </div>
