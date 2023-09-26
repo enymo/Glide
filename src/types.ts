@@ -132,23 +132,95 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> {
     suffix?: React.FC<SuffixProps>,
 }
 
-export interface GlideCheckboxConfig<LabelProps> {
+export interface GlideChoiceConfig<ElementProps> {
+    /**
+     * Sets the wrapper style around the checkbox, label and error text.
+     */
     wrapperStyle?: React.CSSProperties,
-    checkedWrapperStyle?: React.CSSProperties,
+    /**
+     * The style of the checkbox wrapper when the checkbox is checked.
+     */
+    selectedWrapperStyle?: React.CSSProperties,
+    /**
+     * The style of the checkbox wrapper when the checkbox is in an error state.
+     */
     errorWrapperStyle?: React.CSSProperties,
+    /**
+     * The style of the checkbox wrapper when the checkbox is disabled.
+     */
     disabledWrapperStyle?: React.CSSProperties,
-    checkmark?: React.ReactNode,
-    checkboxStyle?: React.CSSProperties,
-    checkedCheckboxStyle?: React.CSSProperties,
-    errorCheckboxStyle?: React.CSSProperties,
-    disabledCheckboxStyle?: React.CSSProperties,
+    /**
+     * The style of the checkbox. If not specified, the checkbox will not appear.
+     */
+    /**
+     * The style of the indicator. If not specified, the indicator will not appear.
+     */
+    indicator?: {
+        /**
+         * The element to be displayed when the choice is selected.
+         */
+        element: React.ReactNode,
+        /**
+         * The style of the indicator.
+         */
+        style: React.CSSProperties,
+        /**
+         * The style of the indicator when it is selected.
+         */
+        selectedStyle?: React.CSSProperties,
+        /**
+         * The style of the indicator when an error is present.
+         */
+        errorStyle?: React.CSSProperties,
+        /**
+         * The style of the indicator when disabled.
+         */
+        disabledStyle?: React.CSSProperties,
+        /**
+         * The vertical alignment of the indicator.
+         */
+        alignment?: "flex-start" | "center" | "flex-end",
+        /**
+         * Whether the children are displayed to the left or right of the indicator.
+         */
+        childrenPosition?: "left" | "right",
+    },
+    /**
+     * The style of the error text.
+     */
     errorTextStyle?: React.CSSProperties,
-    labelGap?: string,
+    /**
+     * The gap between the checkbox and the children.
+     */
+    childrenGap?: string,
+    /**
+     * The gap between the checkbox and the error text.
+     */
     errorGap?: string,
-    labelVerticalAlignment?: "flex-start" | "center" | "flex-end",
-    labelHorizontalAlignment?: "flex-start" | "center" | "flex-end",
-    label?: React.FC<LabelProps>,
-    checkboxAlignment?: "flex-start" | "center" | "flex-end",
+    /**
+     * The vertical alignment of the children.
+     */
+    childrenVerticalAlignment?: "flex-start" | "center" | "flex-end",
+    /**
+     * The horizontal alignment of the children.
+     */
+    childrenHorizontalAlignment?: "flex-start" | "center" | "flex-end",
+    /**
+     * A custom component to display instead of the children.
+     */
+    element?: React.FC<ElementProps>,
+    /**
+     * A custom component to display the error. It is passed the error as a prop.
+     */
     errorComponent?: React.FC<{ error: string }>,
-    labelPosition?: "left" | "right",
+    /**
+     *  The position of the error text.
+     */
+    errorPosition?: "inside" | "under",
+}
+
+export interface GlideChoiceGroupConfig {
+    errorStyle?: React.CSSProperties,
+    errorComponent?: React.FC<{ error: string }>,
+    errorGap?: string,    
 }

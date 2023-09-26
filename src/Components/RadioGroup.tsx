@@ -7,15 +7,15 @@ import { Stylesheet } from "../Stylesheet";
 let glideCounter = 0;
 
 const Context = createContext<{
-    value: (string | number)[],
-    toggle: (names: string | number | (string | number)[]) => void
+    value: string | number,
+    toggle: (id: string | number) => void
 } | null>(null);
-export const useCheckboxList = () => useContext(Context);
+export const useRadioGroup = () => useContext(Context);
 
-interface CheckboxListProps<T extends string | number> {
+interface RadioButtonListProps<T extends string | number> {
     name?: string,
-    value?: T[],
-    onChange?: (value: T[]) => void,
+    value?: T,
+    onChange?: (value: T) => void,
     options?: RegisterOptions,
     children: React.ReactNode,
     handlesError?: boolean,
@@ -49,33 +49,19 @@ export default (config: GlideChoiceGroupConfig) => {
         children,
         handlesError,
         gap,
-    }: CheckboxListProps<T>) => {
+    }: RadioButtonListProps<T>) => {
         const form = useFormContext();
         const { field: { onChange: internalOnChange, value: internalValue }, fieldState: { error } } =
-            useController({ name: name ?? "", control: form?.control, rules: options, defaultValue: [] });
-        const value: T[] = form ? internalValue : externalValue;
+            useController({ name: name ?? "", control: form?.control, rules: options });
+        const value: T = form ? internalValue : externalValue;
 
-        const onChange = useCallback((value: T[]) => {
+        const onChange = useCallback((value: T) => {
             externalOnChange?.(value);
             internalOnChange?.(value);
         }, [externalOnChange, internalOnChange]);
 
-        const handleToggle = (names: T | T[]) => {
-            const add: T[] = [];
-            const remove: T[] = [];
-            for (const name of Array.isArray(names) ? names : [names]) {
-                if (value.includes(name)) {
-                    remove.push(name);
-                }
-                else {
-                    add.push(name);
-                }
-            }
-            onChange([...value.filter(value => !remove.includes(value)), ...add]);
-        }
-
         const content = (
-            <Context.Provider value={{ value, toggle: handleToggle as any }}>
+            <Context.Provider value={{ value, toggle: onChange as any }}>
                 <ErrorProvider value={handlesError ? undefined : error?.message}>
                     {children}
                 </ErrorProvider>

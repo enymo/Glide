@@ -1,4 +1,5 @@
 export { default as createGlideInput } from "./Components/Input";
 export { default as createGlideButton } from "./Components/Button"; 
-export { default as createGlideCheckbox } from "./Components/Checkbox";
-export { CheckboxList, useCheckboxError, useCheckboxList } from "./Components/CheckboxList";
+export { default as createGlideChoice } from "./Components/Choice";
+export { default as createGlideCheckboxList, useCheckboxList } from "./Components/CheckboxList";
+export { default as createGlideRadioGroup, useRadioGroup } from "./Components/RadioGroup";
