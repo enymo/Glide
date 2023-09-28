@@ -1,8 +1,9 @@
-import React, { createContext, useCallback, useContext } from "react";
-import { RegisterOptions, useController, useFormContext } from "react-hook-form";
+import useHybridInput from "@enymo/react-hybrid-input-hook";
+import React, { createContext, useContext } from "react";
+import { RegisterOptions } from "react-hook-form";
 import { ErrorProvider } from "../Hooks/ErrorContext";
-import { GlideChoiceGroupConfig } from "../types";
 import { Stylesheet } from "../Stylesheet";
+import { GlideChoiceGroupConfig } from "../types";
 
 let glideCounter = 0;
 
@@ -50,15 +51,7 @@ export default (config: GlideChoiceGroupConfig) => {
         handlesError,
         gap,
     }: RadioButtonListProps<T>) => {
-        const form = useFormContext();
-        const { field: { onChange: internalOnChange, value: internalValue }, fieldState: { error } } =
-            useController({ name: name ?? "", control: form?.control, rules: options });
-        const value: T = form ? internalValue : externalValue;
-
-        const onChange = useCallback((value: T) => {
-            externalOnChange?.(value);
-            internalOnChange?.(value);
-        }, [externalOnChange, internalOnChange]);
+        const {value, onChange, error} = useHybridInput({name, externalValue, externalOnChange, options});
 
         const content = (
             <Context.Provider value={{ value, toggle: onChange as any }}>
