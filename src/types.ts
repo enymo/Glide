@@ -166,24 +166,25 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> extends InputStyle {
 
 export interface ChoiceStyle {
     /**
-     * Sets the wrapper style around the checkbox, label and error text.
+     * Sets the wrapper style around the choice input, label and error text.
      */
     wrapperStyle?: React.CSSProperties,
     /**
-     * The style of the checkbox wrapper when the checkbox is checked.
+     * The style of the choice input wrapper when the choice input is checked.
      */
     selectedWrapperStyle?: React.CSSProperties,
     /**
-     * The style of the checkbox wrapper when the checkbox is in an error state.
+     * The style of the choice input wrapper when the choice input is in an error state.
      */
     errorWrapperStyle?: React.CSSProperties,
     /**
-     * The style of the checkbox wrapper when the checkbox is disabled.
+     * The style of the choice input wrapper when the choice input is disabled.
      */
     disabledWrapperStyle?: React.CSSProperties,
     /**
-     * The style of the checkbox. If not specified, the checkbox will not appear.
+     * The style of the choice input wrapper when the wrapper is hovered over.
      */
+    hoverWrapperStyle?: React.CSSProperties,
     /**
      * The style of the indicator. If not specified, the indicator will not appear.
      */

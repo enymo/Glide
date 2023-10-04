@@ -91,6 +91,7 @@ function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
 
     inputRule.addRule("&:checked  + .choice-wrapper", styles.selectedWrapperStyle);
     rule.addRule("&.disabled .choice-wrapper", styles.disabledWrapperStyle);
+    rule.addRule("&:hover:not(.disabled)", styles.hoverWrapperStyle);
     rule.addRule("&.error .choice-wrapper", styles.errorWrapperStyle);
 
     if (styles.indicator) {
