@@ -8,6 +8,14 @@ import { GlideInputConfig, InputLabelPosition, InputStyle } from "../types";
 
 let glideCounter = 0;
 
+const globalStyle = new Stylesheet();
+
+globalStyle.addRule(".glide-input .input", {
+    color: "inherit"
+});
+
+globalStyle.apply();
+
 export type InputProps<PrefixProps, SuffixProps> = {
     /**
      * The name of the input. This is used to register the input with the form context.
@@ -164,7 +172,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         const { ref: registerRef, ...register } = name && form ? form.register(name, disabled ? undefined : options) : { ref: undefined };
 
         return (
-            <div className={classNames(glideClassName, config.className, className)} style={{ flex, ...style }}>
+            <div className={classNames("glide-input", glideClassName, config.className, className)} style={{ flex, ...style }}>
                 {label && (
                     <span className={classNames("input-label", "outside-top-label")}>{label}</span>
                 )}
