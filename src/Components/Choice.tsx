@@ -201,7 +201,7 @@ export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelPr
         ), [error, config.errorComponent])
 
         return (
-            <label className={classNames(glideClassName, className, { error, disabled })} style={style}>
+            <label className={classNames(glideClassName, className, config.className, { error, disabled })} style={style}>
                 <input
                     type={radioListContext ? "radio" : "checkbox"}
                     checked={checked}
@@ -216,9 +216,9 @@ export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelPr
                             React.createElement(config.element, props as LabelProps)
                         ) : (<span className="label">{children}</span>)}
                     </div>
-                    <div className={classNames("error-component", "inside")}>{errorComponent}</div>
+                    {error && <div className={classNames("error-component", "inside")}>{errorComponent}</div>}
                 </div>
-                <div className={classNames("error-component", "under")}>{errorComponent}</div>
+                {error && <div className={classNames("error-component", "under")}>{errorComponent}</div>}
             </label>
         )
     }

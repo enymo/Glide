@@ -45,6 +45,10 @@ interface ButtonResponsiveStyle extends ButtonStyle {
 
 export interface GlideButtonConfig<Variants extends string, ElementProps extends DefaultElementProps> extends ButtonStyle {
     /**
+     * Class(es) to always be added to this button.
+     */
+    className?: string,
+    /**
      * A list of variants for the button. A variant can be marked private by prefixing it with a dot.
      * Private variants may be extended, but the do not show up a options for the 'variant'-prop of the button.
      */
@@ -127,7 +131,7 @@ export type InputLabelPosition = "outside-top" | "outside-left" | "inside-top" |
 
 export interface GlideInputConfig<PrefixProps, SuffixProps> extends InputStyle {
     /**
-     * Class(es) to always be added to this input
+     * Class(es) to always be added to this input.
      */
     className?: string,
     /**
@@ -245,6 +249,10 @@ interface ChoiceResponsiveStyle extends ChoiceStyle {
 }
 
 export interface GlideChoiceConfig<ElementProps> extends ChoiceStyle {
+    /**
+     * Class(es) to always be added to this choice input.
+     */
+    className?: string,
     /**
      * Styles which are applied when the width and mode match.
      */

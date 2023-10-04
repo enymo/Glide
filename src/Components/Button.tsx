@@ -128,7 +128,7 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
 
         return (
             <Clickable
-                className={classNames("glide-button", glideClassName, variant, className, { loading })}
+                className={classNames("glide-button", glideClassName, variant, className, config.className, { loading })}
                 disabled={disabled}
                 submit={submit}
                 onClick={handleClick}
