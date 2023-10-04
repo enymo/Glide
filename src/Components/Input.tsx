@@ -3,8 +3,8 @@ import classNames from "classnames";
 import _ from "lodash";
 import React, { HTMLInputTypeAttribute, useCallback, useRef } from "react";
 import { RegisterOptions, useFormContext } from "react-hook-form";
-import { Stylesheet } from "../Stylesheet";
-import { GlideInputConfig } from "../types";
+import { StyleRule, Stylesheet } from "../Stylesheet";
+import { GlideInputConfig, InputLabelPosition, InputStyle } from "../types";
 
 let glideCounter = 0;
 
@@ -59,6 +59,62 @@ export type InputProps<PrefixProps, SuffixProps> = {
     options?: RegisterOptions,
 } & PrefixProps & SuffixProps;
 
+function addInputRules(rule: StyleRule, styles: InputStyle & {
+    labelPosition?: InputLabelPosition,
+}, responsiveRules: boolean = false) {
+    const inputRowRule = rule.addRule(".input-row", !responsiveRules ? {
+        display: "flex",
+        alignItems: "center",
+    } : {});
+    const inputWrapRule = inputRowRule.addRule(".input-wrap", responsiveRules ? styles.style : {
+        display: "flex",
+        flex: 1,
+        alignItems: "stretch",
+        cursor: "text",
+        ...styles.style
+    });
+    const inputLabelWrapRule = inputWrapRule.addRule(".inside-label-wrap", responsiveRules ? undefined : {
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+    });
+
+    inputLabelWrapRule.addRule(".input", responsiveRules ? {
+        padding: styles.inputPadding,
+    } : {
+        border: "none",
+        outline: "none",
+        backgroundColor: "transparent",
+        flex: 1,
+        padding: styles.inputPadding ?? "0",
+    });
+    inputLabelWrapRule.addRule(".input::placeholder", styles.labelPosition === "placeholder" ? styles.labelStyle : styles.placeholderStyle);
+
+    inputWrapRule.addRule("&:hover", styles.hoverStyle);
+    inputWrapRule.addRule("&:focus-within:not(.error)", styles.focusStyle);
+    inputWrapRule.addRule("&.error", styles.errorStyle);
+    inputWrapRule.addRule("&.disabled", styles.disabledStyle);
+
+    const inputLabelRule = rule.addRule(".input-label", styles.labelStyle);
+    inputLabelRule.addRule("&.outside-top-label", {
+        display: !responsiveRules && styles.labelPosition == "outside-top" ? "flex" : "none",
+        marginBottom: styles.labelGap,
+    });
+    inputLabelRule.addRule("&.outside-left-label", {
+        display: !responsiveRules && styles.labelPosition == "outside-left" ? "flex" : "none",
+        marginRight: styles.labelGap,
+    });
+    inputLabelRule.addRule("&.inside-top-label", {
+        display: !responsiveRules && styles.labelPosition == "inside-top" ? "flex" : "none",
+        marginBottom: styles.labelGap,
+    });
+    
+    rule.addRule(".input-error", responsiveRules ? styles.errorTextStyle : {
+        marginTop: styles.errorGap,
+        ...styles.errorTextStyle
+    });
+}
+
 export default <PrefixProps extends object, SuffixProps extends object>(config: GlideInputConfig<PrefixProps, SuffixProps>) => {
     const glideClassName = `glide-input-${++glideCounter}`;
     const style = new Stylesheet();
@@ -66,57 +122,18 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         display: "flex",
         flexDirection: "column",
     });
+    addInputRules(rule, config);
 
-    const inputRowRule = rule.addRule(".input-row", {
-        display: "flex",
-        alignItems: "center",
-    });
-    const inputWrapRule = inputRowRule.addRule(".outer-input-wrap", {
-        display: "flex",
-        flex: 1,
-        alignItems: "stretch",
-        cursor: "text",
-        ...config.style
-    });
-    const inputLabelWrapRule = inputWrapRule.addRule(".inside-label-wrap", {
-        display: "flex",
-        flex: 1,
-        flexDirection: "column",
-    });
-    inputLabelWrapRule.addRule(".inner-input-wrap", {
-        display: "flex",
-        flex: 1,
-        alignItems: "center",
-    });
-    inputLabelWrapRule.addRule(".input", {
-        border: "none",
-        outline: "none",
-        padding: config.inputPadding ?? "0",
-        backgroundColor: "transparent",
-        flex: 1,
-    });
-    inputLabelWrapRule.addRule(".input::placeholder", config.labelPosition == "placeholder" ? config.labelStyle : config.placeholderStyle);
-
-    inputWrapRule.addRule("&:hover", config.hoverStyle);
-    inputWrapRule.addRule("&:focus-within:not(.error)", config.focusStyle);
-    inputWrapRule.addRule("&.error", config.errorStyle);
-    inputWrapRule.addRule("&.disabled", config.disabledStyle);
-
-    const inputLabelRule = rule.addRule(".input-label", config.labelStyle);
-    inputLabelRule.addRule("&.outside-top-label", {
-        marginBottom: config.labelGap,
-    });
-    inputLabelRule.addRule("&.outside-left-label", {
-        marginRight: config.labelGap,
-    });
-    inputLabelRule.addRule("&.inside-top-label", {
-        marginBottom: config.labelGap,
-    });
-
-    rule.addRule(".input-error", {
-        marginTop: config.errorGap,
-        ...config.errorTextStyle
-    });
+    if (config.responsive) {
+        for (const { mode, width, ...styles } of config.responsive) {
+            const responsiveRule = style.addMediaRule([{ mode, width }]);
+            const rule = responsiveRule.addRule(`.${glideClassName}`);
+            addInputRules(rule, {
+                labelPosition: config.labelPosition,
+                ...styles
+            }, true);
+        }
+    }
 
     style.apply();
 
@@ -148,35 +165,33 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
 
         return (
             <div className={classNames(glideClassName, config.className, className)} style={{ flex, ...style }}>
-                {label && config.labelPosition == "outside-top" && (
+                {label && (
                     <span className={classNames("input-label", "outside-top-label")}>{label}</span>
                 )}
                 <div className="input-row">
-                    {label && config.labelPosition == "outside-left" && (
+                    {label && (
                         <span className={classNames("input-label", "outside-left-label")}>{label}</span>
                     )}
-                    <div className={classNames("outer-input-wrap", { error, disabled })} onClick={handleWrapperClick}>
+                    <div className={classNames("input-wrap", { error, disabled })} onClick={handleWrapperClick}>
                         {config.prefix && React.createElement(config.prefix, props as PrefixProps)}
                         <div className="inside-label-wrap">
-                            {label && config.labelPosition == "inside-top" && (
+                            {label && (
                                 <span className={classNames("input-label", "inside-top-label")}>{label}</span>
                             )}
-                            <div className="inner-input-wrap">
-                                {React.createElement(type == "textarea" ? "textarea" : "input", {
-                                    ref: (e: HTMLInputElement | HTMLTextAreaElement) => {
-                                        registerRef?.(e);
-                                        inputRef.current = e;
-                                    },
-                                    className: classNames("input", { error }),
-                                    type,
-                                    name,
-                                    placeholder: config.labelPosition == "placeholder" ? label : placeholder,
-                                    value,
-                                    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange?.(e.target.value),
-                                    disabled,
-                                    ...register,
-                                })}
-                            </div>
+                            {React.createElement(type == "textarea" ? "textarea" : "input", {
+                                ref: (e: HTMLInputElement | HTMLTextAreaElement) => {
+                                    registerRef?.(e);
+                                    inputRef.current = e;
+                                },
+                                className: classNames("input", { error }),
+                                type,
+                                name,
+                                placeholder: config.labelPosition == "placeholder" ? label : placeholder,
+                                value,
+                                onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange?.(e.target.value),
+                                disabled,
+                                ...register,
+                            })}
                         </div>
                         {config.suffix && React.createElement(config.suffix, props as SuffixProps)}
                     </div>

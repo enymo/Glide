@@ -25,12 +25,22 @@ export interface ButtonVariantStyle<Variants extends string> extends ButtonStyle
     /**
      * The variant that the current variant extends. All styles of the extended variant are also applied to the current variant
      */
-    extends?: Copy<Variants>
+    extends?: Copy<Variants>,
+    /**
+     * Styles which are applied when the width and mode match.
+     */
+    responsive?: ButtonResponsiveStyle[]
 }
 
 export interface DefaultElementProps {
     variant?: string,
     children: React.ReactNode
+}
+
+interface ButtonResponsiveStyle extends ButtonStyle {
+    width: number,
+    mode: "min" | "max",
+    loaderPadding?: string,
 }
 
 export interface GlideButtonConfig<Variants extends string, ElementProps extends DefaultElementProps> extends ButtonStyle {
@@ -54,14 +64,14 @@ export interface GlideButtonConfig<Variants extends string, ElementProps extends
     /**
      * React component to render the buttons content. 'children' prop is passed by default and any additional props are added to the button.
      */
-    element?: React.FC<ElementProps>
+    element?: React.FC<ElementProps>,
+    /**
+     * Styles which are applied when the width and mode match.
+     */
+    responsive?: ButtonResponsiveStyle[]
 }
 
-export interface GlideInputConfig<PrefixProps, SuffixProps> {
-    /**
-     * Class(es) to always be added to this input
-     */
-    className?: string
+export interface InputStyle {
     /**
      * The style of the input wrapper. This is what you would normally use to style the input.
      */
@@ -91,17 +101,9 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> {
      */
     placeholderStyle?: React.CSSProperties,
     /**
-     * The position of the label.
-     * - `outside-top`: The label is above the input.
-     * - `outside-left`: The label is to the left of the input.
-     * - `inside-top`: The label is inside the input, above the input text.
-     * - `placeholder`: The label is inside the input, as a placeholder.
-     */
-    labelPosition: "outside-top" | "outside-left" | "inside-top" | "placeholder" | "none",
-    /**
      * The style of the label.
      */
-    labelStyle: React.CSSProperties,
+    labelStyle?: React.CSSProperties,
     /**
      * The gap between the label and the input. Does not apply to `placeholder`. In case of `inside-top`, it is advised to use `inputPadding` instead.
      */
@@ -114,6 +116,32 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> {
      * The gap between the input and the error text.
      */
     errorGap?: string,
+}
+
+interface InputResponsiveStyle extends InputStyle {
+    width: number,
+    mode: "min" | "max",
+}
+
+export type InputLabelPosition = "outside-top" | "outside-left" | "inside-top" | "placeholder" | "none";
+
+export interface GlideInputConfig<PrefixProps, SuffixProps> extends InputStyle {
+    /**
+     * Class(es) to always be added to this input
+     */
+    className?: string,
+    /**
+     * The position of the label.
+     * - `outside-top`: The label is above the input.
+     * - `outside-left`: The label is to the left of the input.
+     * - `inside-top`: The label is inside the input, above the input text.
+     * - `placeholder`: The label is inside the input, as a placeholder.
+     */
+    labelPosition: InputLabelPosition,
+    /**
+     * Styles which are applied when the width and mode match.
+     */
+    responsive?: InputResponsiveStyle[],
     /**
      * A custom component to display the error. It is passed the error as a prop.
      */
@@ -132,7 +160,7 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> {
     suffix?: React.FC<SuffixProps>,
 }
 
-export interface GlideChoiceConfig<ElementProps> {
+export interface ChoiceStyle {
     /**
      * Sets the wrapper style around the checkbox, label and error text.
      */
@@ -206,6 +234,22 @@ export interface GlideChoiceConfig<ElementProps> {
      */
     childrenHorizontalAlignment?: "flex-start" | "center" | "flex-end",
     /**
+     *  The position of the error text.
+     */
+    errorPosition?: "inside" | "under",
+}
+
+interface ChoiceResponsiveStyle extends ChoiceStyle {
+    width: number,
+    mode: "min" | "max",
+}
+
+export interface GlideChoiceConfig<ElementProps> extends ChoiceStyle {
+    /**
+     * Styles which are applied when the width and mode match.
+     */
+    responsive?: ChoiceResponsiveStyle[],
+    /**
      * A custom component to display instead of the children.
      */
     element?: React.FC<ElementProps>,
@@ -213,14 +257,10 @@ export interface GlideChoiceConfig<ElementProps> {
      * A custom component to display the error. It is passed the error as a prop.
      */
     errorComponent?: React.FC<{ error: string }>,
-    /**
-     *  The position of the error text.
-     */
-    errorPosition?: "inside" | "under",
 }
 
 export interface GlideChoiceGroupConfig {
     errorStyle?: React.CSSProperties,
     errorComponent?: React.FC<{ error: string }>,
-    errorGap?: string,    
+    errorGap?: string,
 }

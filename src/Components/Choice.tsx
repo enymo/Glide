@@ -1,101 +1,163 @@
 import React, { useMemo } from "react";
 import { RegisterOptions, useFormContext } from "react-hook-form";
-import { Stylesheet } from "../Stylesheet";
-import { GlideChoiceConfig } from "../types";
+import { StyleRule, Stylesheet } from "../Stylesheet";
+import { ChoiceStyle, GlideChoiceConfig } from "../types";
 import classNames from "classnames";
 import { useDisabled } from "@enymo/react-form-component";
 import _ from "lodash";
 import { useCheckboxList } from "./CheckboxList";
 import { useRadioGroup } from "./RadioGroup";
-import { requireNotNull } from "../common";
 import { useError } from "../Hooks/ErrorContext";
 
 let glideCounter = 0;
 
 interface ChoiceProps {
+    /**
+     * The name of the input. This is used to register the input with the form context. If the Choice is part of a CheckboxList or RadioGroup, this is not needed.
+     */
     name?: string,
+    /**
+     * The value of the input. This is used to register the input with the CheckboxList or RadioGroup.
+     */
     value?: string | number,
+    /**
+     * The children of the input. It will be rendered as the label of the input.
+     */
     children?: React.ReactNode,
+    /**
+     * The class name of the input. It is appended to the default class name.
+     */
     className?: string,
+    /**
+     * The style of the input. It is merged with the default style.
+     */
     style?: React.CSSProperties,
+    /**
+     * The error the input should show. If not provided, the error is taken from the form context.
+     */
     error?: string,
+    /**
+     * Whether the input is checked. Used for controlled inputs.
+     */
     checked?: boolean,
+    /**
+     * The function that is called when the value of the input changes. Used for controlled inputs.
+     */
     onChange?: (value: boolean) => void,
+    /**
+     * Whether the input is disabled. If not provided, the disabled state is taken from the form context.
+     */
     disabled?: boolean,
+    /**
+     * The options for the react-hook-form register function.
+     */
     options?: RegisterOptions,
 }
 
-export default <LabelProps extends object>({
-    errorPosition = "inside",
-    ...config
-}: GlideChoiceConfig<LabelProps>) => {
-    const glideClassName = `glide-choice-${++glideCounter}`;
-    const style = new Stylesheet();
-    const rule = style.addRule(`.${glideClassName}`, errorPosition == "under" ? {
-        display: "flex",
-        flexDirection: "column",
-        gap: config.errorGap,
-    } : {});
+function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
     const inputRule = rule.addRule("input", {
         "display": "none",
     });
     const choiceWrapperRule = rule.addRule(".choice-wrapper", {
         display: "flex",
         flexDirection: "column",
-        gap: errorPosition == "inside" ? config.errorGap : undefined,
-        ...config.wrapperStyle,
+        gap: styles.errorPosition == "inside" ? styles.errorGap : undefined,
+        ...styles.wrapperStyle,
     });
 
     const labelWrapperRule = choiceWrapperRule.addRule(".label-wrapper", {
         display: "flex",
-        gap: config.childrenGap,
-        flexDirection: config.indicator?.childrenPosition === "left" ? "row-reverse" : "row",
+        gap: styles.childrenGap,
+        flexDirection: styles.indicator?.childrenPosition === "left" ? "row-reverse" : "row",
     });
 
     labelWrapperRule.addRule(".label", {
         display: "flex",
-        alignItems: config.childrenVerticalAlignment,
-        justifyContent: config.childrenHorizontalAlignment,
+        alignItems: styles.childrenVerticalAlignment,
+        justifyContent: styles.childrenHorizontalAlignment,
         flex: 1,
     });
-    rule.addRule(".input-error", config.errorTextStyle);
+    const errorComponentRule = rule.addRule(".error-component", {
+        display: "flex",
+        flex: 1,
+    });
+    errorComponentRule.addRule("&.inside", {
+        display: styles.errorPosition == "inside" ? "flex" : "none",
+    });
+    errorComponentRule.addRule("&.under", {
+        display: styles.errorPosition == "under" ? "flex" : "none",
+    });
+    errorComponentRule.addRule(".input-error", styles.errorTextStyle);
 
-    inputRule.addRule("&:checked  + .choice-wrapper", config.selectedWrapperStyle);
-    rule.addRule("&.disabled .choice-wrapper", config.disabledWrapperStyle);
-    rule.addRule("&.error .choice-wrapper", config.errorWrapperStyle);
+    inputRule.addRule("&:checked  + .choice-wrapper", styles.selectedWrapperStyle);
+    rule.addRule("&.disabled .choice-wrapper", styles.disabledWrapperStyle);
+    rule.addRule("&.error .choice-wrapper", styles.errorWrapperStyle);
 
-    if (config.indicator) {
+    if (styles.indicator) {
         const indicatorRule = labelWrapperRule.addRule(".indicator", {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
-            alignSelf: config.indicator.alignment,
-            ...config.indicator.style,
+            alignSelf: styles.indicator.alignment,
+            ...styles.indicator.style,
         });
 
         indicatorRule.addRule(">*", {
             display: "none",
         });
 
-        const inputCheckedRule = inputRule.addRule("&:checked + .choice-wrapper .indicator", config.indicator.selectedStyle);
+        const inputCheckedRule = inputRule.addRule("&:checked + .choice-wrapper .indicator", styles.indicator.selectedStyle);
         inputCheckedRule.addRule(">*", {
             display: "flex",
         });
 
-        rule.addRule("&.disabled .indicator", config.indicator.disabledStyle);
-        rule.addRule("&.error .indicator", config.indicator.errorStyle);
+        rule.addRule("&.disabled .indicator", styles.indicator.disabledStyle);
+        rule.addRule("&.error .indicator", styles.indicator.errorStyle);
 
     } else {
         labelWrapperRule.addRule(".indicator", {
             display: "none",
         });
     }
+}
+
+export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelProps>) => {
+    const glideClassName = `glide-choice-${++glideCounter}`;
+    const style = new Stylesheet();
+    const config = {
+        errorPosition: configProp.errorPosition ?? "inside",
+        ...configProp,
+    }
+    const rule = style.addRule(`.${glideClassName}`, config.errorPosition == "under" ? {
+        display: "flex",
+        flexDirection: "column",
+        gap: config.errorGap,
+    } : {});
+    
+    addChoiceRules(rule, config);
+
+    if (config.responsive) {
+        for (const { mode, width, ...styles } of config.responsive) {
+            const responsiveRule = style.addMediaRule([{ mode, width }]);
+            const rule = responsiveRule.addRule(`.${glideClassName}`, styles.errorPosition == "under" ? {
+                display: "flex",
+                flexDirection: "column",
+                gap: styles.errorGap,
+            } : {});
+            addChoiceRules(rule, {
+                ...config,
+                ...styles,
+                indicator: config.indicator ? {
+                    ...config.indicator,
+                    ...styles.indicator,
+                } : undefined,
+            });
+        }
+    }
 
     style.apply();
-    /**
-     * If type is "radio", then RadioList required for intended function.
-     */
+
     return ({
         name,
         value,
@@ -154,9 +216,9 @@ export default <LabelProps extends object>({
                             React.createElement(config.element, props as LabelProps)
                         ) : (<span className="label">{children}</span>)}
                     </div>
-                    {errorPosition == "inside" && errorComponent}
+                    <div className={classNames("error-component", "inside")}>{errorComponent}</div>
                 </div>
-                {errorPosition == "under" && errorComponent}
+                <div className={classNames("error-component", "under")}>{errorComponent}</div>
             </label>
         )
     }

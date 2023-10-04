@@ -50,7 +50,7 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
         padding: config.loaderPadding
     });
 
-    const dependencies: {[variant: string]: string[]} = {}
+    const dependencies: { [variant: string]: string[] } = {}
 
     if (config.variants) {
         for (const variant of Object.keys(config.variants) as Variants[]) {
@@ -68,6 +68,32 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
             const variantRule = rule.addRule(dependencies[variant].map(variant => `&.${variant}`), variantConfig.style);
             variantRule.addRule("&:hover", variantConfig.hoverStyle);
             variantRule.addRule("&:active", variantConfig.clickStyle);
+            if (variantConfig.responsive) {
+                for (const { mode, width, ...styles } of variantConfig.responsive) {
+                    const mediaRule = style.addMediaRule([{ mode, width }]);
+                    const rule = mediaRule.addRule(`.${glideClassName}`);
+                    const variantRule = rule.addRule(dependencies[variant].map(variant => `&.${variant}`), styles.style);
+                    variantRule.addRule("&:hover:not(.disabled)", styles.hoverStyle);
+                    variantRule.addRule("&:active:not(.disabled)", styles.clickStyle);
+                    variantRule.addRule("&.disabled", styles.disabledStyle);
+                    variantRule.addRule(".loader-wrap", {
+                        padding: styles.loaderPadding
+                    });
+                }
+            }
+        }
+    }
+
+    if (config.responsive) {
+        for (const { mode, width, loaderPadding, ...styles } of config.responsive) {
+            const mediaRule = style.addMediaRule([{ mode, width }]);
+            const rule = mediaRule.addRule(`.${glideClassName}`, styles.style);
+            rule.addRule("&:hover:not(.disabled)", styles.hoverStyle);
+            rule.addRule("&:active:not(.disabled)", styles.clickStyle);
+            rule.addRule("&.disabled", styles.disabledStyle);
+            rule.addRule(".loader-wrap", {
+                padding: loaderPadding
+            });
         }
     }
 
@@ -102,17 +128,17 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
 
         return (
             <Clickable
-                className={classNames("glide-button", glideClassName, variant, className, {loading})}
+                className={classNames("glide-button", glideClassName, variant, className, { loading })}
                 disabled={disabled}
                 submit={submit}
                 onClick={handleClick}
-                style={{flex, ...style}}
+                style={{ flex, ...style }}
                 linkType={linkType}
                 to={to}
                 {...props}
             >
                 <div className="content">
-                    {config.element ? React.createElement(config.element, {children, variant, ...props} as ElementProps) : children}
+                    {config.element ? React.createElement(config.element, { children, variant, ...props } as ElementProps) : children}
                 </div>
                 <div className="loading-wrap">
                     {config.loader}
