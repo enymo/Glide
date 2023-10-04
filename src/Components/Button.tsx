@@ -8,7 +8,10 @@ import { ButtonVariantStyle, DefaultElementProps, GlideButtonConfig, WithoutPriv
 const globalStyle = new Stylesheet();
 
 const buttonRule = globalStyle.addRule(".glide-button", {
-    position: "relative"
+    position: "relative",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
 });
 buttonRule.addRule(".loading-wrap", {
     display: "none",
