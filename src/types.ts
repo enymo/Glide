@@ -165,6 +165,8 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> extends InputStyle {
 }
 
 export interface ChoiceStyle {
+    choiceHeight?: string,
+    choiceWidth?: string,
     /**
      * Sets the wrapper style around the choice input, label and error text.
      */

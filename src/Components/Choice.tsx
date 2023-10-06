@@ -61,6 +61,7 @@ function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
     const choiceWrapperRule = rule.addRule(".choice-wrapper", {
         display: "flex",
         flexDirection: "column",
+        flex: 1,
         gap: styles.errorPosition == "inside" ? styles.errorGap : undefined,
         ...styles.wrapperStyle,
     });
@@ -92,7 +93,7 @@ function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
 
     inputRule.addRule("&:checked  + .choice-wrapper", styles.selectedWrapperStyle);
     rule.addRule("&.disabled .choice-wrapper", styles.disabledWrapperStyle);
-    rule.addRule("&:hover:not(.disabled)", styles.hoverWrapperStyle);
+    rule.addRule("&:hover .choice-wrapper", styles.hoverWrapperStyle);
     rule.addRule("&.error .choice-wrapper", styles.errorWrapperStyle);
 
     if (styles.indicator) {
@@ -131,22 +132,26 @@ export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelPr
         errorPosition: configProp.errorPosition ?? "inside",
         ...configProp,
     }
-    const rule = style.addRule(`.${glideClassName}`, config.errorPosition == "under" ? {
+    const rule = style.addRule(`.${glideClassName}`, {
         display: "flex",
         flexDirection: "column",
-        gap: config.errorGap,
-    } : {});
+        width: config.choiceWidth,
+        height: config.choiceHeight,
+        gap: config.errorPosition == "under" ? config.errorGap : undefined,
+    });
     
     addChoiceRules(rule, config);
 
     if (config.responsive) {
         for (const { mode, width, ...styles } of config.responsive) {
             const responsiveRule = style.addMediaRule([{ mode, width }]);
-            const rule = responsiveRule.addRule(`.${glideClassName}`, styles.errorPosition == "under" ? {
+            const rule = responsiveRule.addRule(`.${glideClassName}`, {
                 display: "flex",
                 flexDirection: "column",
-                gap: styles.errorGap,
-            } : {});
+                width: styles.choiceWidth,
+                height: styles.choiceHeight,
+                gap: styles.errorPosition == "under" ? styles.errorGap : undefined,
+            });
             addChoiceRules(rule, {
                 ...config,
                 ...styles,
