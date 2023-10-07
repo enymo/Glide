@@ -46,7 +46,7 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
     rule.addRule("&:hover:not(.disabled)", config.hoverStyle);
     rule.addRule("&:active:not(.disabled)", config.clickStyle);
     rule.addRule("&.disabled", config.disabledStyle);
-    rule.addRule(".loader-wrap", {
+    rule.addRule(".loading-wrap", {
         padding: config.loaderPadding
     });
 
