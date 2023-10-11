@@ -4,6 +4,7 @@ import { RegisterOptions } from "react-hook-form";
 import { ErrorProvider } from "../Hooks/ErrorContext";
 import { Stylesheet } from "../Stylesheet";
 import { GlideChoiceGroupConfig } from "../types";
+import classNames from "classnames";
 
 let glideCounter = 0;
 
@@ -21,6 +22,9 @@ interface CheckboxListProps<T extends string | number> {
     children: React.ReactNode,
     handlesError?: boolean,
     gap?: string,
+    className?: string,
+    flexDirection?: "row" | "column",
+    error?: string,
 }
 
 export default (config: GlideChoiceGroupConfig) => {
@@ -35,7 +39,7 @@ export default (config: GlideChoiceGroupConfig) => {
 
     rule.addRule(">div:first-child", {
         display: "flex",
-        flexDirection: "column",
+        flexDirection: config.flexDirection ?? "column",
     })
 
     rule.addRule(".error", config.errorStyle);
@@ -46,12 +50,17 @@ export default (config: GlideChoiceGroupConfig) => {
         name,
         value: externalValue,
         onChange: externalOnChange,
+        className,
         options,
         children,
         handlesError,
         gap,
+        flexDirection,
+        error: errorProp,
     }: CheckboxListProps<T>) => {
-        const {value, onChange, error} = useHybridInput({name, externalValue, externalOnChange, options, defaultValue: []})
+        const {value, onChange, error: formError} = useHybridInput({name, externalValue, externalOnChange, options, defaultValue: []});
+
+        const error = errorProp ?? formError?.message;
 
         const handleToggle = (names: T | T[]) => {
             const add: T[] = [];
@@ -69,7 +78,7 @@ export default (config: GlideChoiceGroupConfig) => {
 
         const content = (
             <Context.Provider value={{ value, toggle: handleToggle as any }}>
-                <ErrorProvider value={handlesError ? undefined : error?.message}>
+                <ErrorProvider value={handlesError ? undefined : error}>
                     {children}
                 </ErrorProvider>
             </Context.Provider>
@@ -77,14 +86,14 @@ export default (config: GlideChoiceGroupConfig) => {
 
         if (handlesError) {
             return (
-                <div className={glideClassName}>
-                    <div style={{ gap }}>
+                <div className={classNames(glideClassName, className)}>
+                    <div style={{ gap, flexDirection }}>
                         {content}
                     </div>
-                    {error?.message && (
+                    {error && (
                         config.errorComponent ? (
-                            React.createElement(config.errorComponent, { error: error.message })
-                        ) : <span className="error">{error.message}</span>
+                            React.createElement(config.errorComponent, { error: error })
+                        ) : <span className="error">{errorProp ?? error}</span>
                     )}
                 </div>
             )

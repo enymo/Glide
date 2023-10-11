@@ -274,4 +274,5 @@ export interface GlideChoiceGroupConfig {
     errorStyle?: React.CSSProperties,
     errorComponent?: React.FC<{ error: string }>,
     errorGap?: string,
+    flexDirection?: "row" | "column",
 }

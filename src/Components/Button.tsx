@@ -52,6 +52,7 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
     rule.addRule(".loading-wrap", {
         padding: config.loaderPadding
     });
+    rule.addRule(".content", { flex: 1 });
 
     const dependencies: { [variant: string]: string[] } = {}
 

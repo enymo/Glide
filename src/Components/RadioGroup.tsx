@@ -1,9 +1,10 @@
-import useHybridInput from "@enymo/react-hybrid-input-hook";
-import React, { createContext, useContext } from "react";
-import { RegisterOptions } from "react-hook-form";
+import React, { createContext, useCallback, useContext } from "react";
+import { RegisterOptions, useController, useForm, useFormContext } from "react-hook-form";
 import { ErrorProvider } from "../Hooks/ErrorContext";
 import { Stylesheet } from "../Stylesheet";
 import { GlideChoiceGroupConfig } from "../types";
+import classNames from "classnames";
+import useHybridInput from "@enymo/react-hybrid-input-hook";
 
 let glideCounter = 0;
 
@@ -21,6 +22,9 @@ interface RadioButtonListProps<T extends string | number> {
     children: React.ReactNode,
     handlesError?: boolean,
     gap?: string,
+    className?: string,
+    flexDirection?: "row" | "column",
+    error?: string,
 }
 
 export default (config: GlideChoiceGroupConfig) => {
@@ -35,7 +39,7 @@ export default (config: GlideChoiceGroupConfig) => {
 
     rule.addRule(">div:first-child", {
         display: "flex",
-        flexDirection: "column",
+        flexDirection: config.flexDirection ?? "column",
     })
 
     rule.addRule(".error", config.errorStyle);
@@ -44,18 +48,22 @@ export default (config: GlideChoiceGroupConfig) => {
 
     return <T extends string | number>({
         name,
+        className,
         value: externalValue,
         onChange: externalOnChange,
         options,
         children,
         handlesError,
         gap,
+        flexDirection,
+        error: errorProp
     }: RadioButtonListProps<T>) => {
-        const {value, onChange, error} = useHybridInput({name, externalValue, externalOnChange, options});
+        const {value, onChange, error: formError } = useHybridInput({name, externalValue, externalOnChange, options});
+        const error = errorProp ?? formError?.message;
 
         const content = (
             <Context.Provider value={{ value, toggle: onChange as any }}>
-                <ErrorProvider value={handlesError ? undefined : error?.message}>
+                <ErrorProvider value={handlesError ? undefined : error}>
                     {children}
                 </ErrorProvider>
             </Context.Provider>
@@ -63,14 +71,14 @@ export default (config: GlideChoiceGroupConfig) => {
 
         if (handlesError) {
             return (
-                <div className={glideClassName}>
-                    <div style={{ gap }}>
+                <div className={classNames(glideClassName, className)}>
+                    <div style={{ gap, flexDirection }}>
                         {content}
                     </div>
-                    {error?.message && (
+                    {error && (
                         config.errorComponent ? (
-                            React.createElement(config.errorComponent, { error: error.message })
-                        ) : <span className="error">{error.message}</span>
+                            React.createElement(config.errorComponent, { error })
+                        ) : <span className="error">{error}</span>
                     )}
                 </div>
             )

@@ -52,6 +52,10 @@ interface ChoiceProps {
      * The options for the react-hook-form register function.
      */
     options?: RegisterOptions,
+    /**
+     * The function that is called when the input is clicked.
+     */
+    onClick?: () => void,
 }
 
 function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
@@ -176,6 +180,7 @@ export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelPr
         disabled: disabledProp,
         error: errorProp,
         options,
+        onClick,
         ...props
     }: ChoiceProps & LabelProps) => {
         const radioListContext = useRadioGroup();
@@ -213,6 +218,7 @@ export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelPr
                     type={radioListContext ? "radio" : "checkbox"}
                     checked={checked}
                     onChange={handleChange}
+                    onClick={onClick}
                     disabled={disabled}
                     {...register}
                 />
