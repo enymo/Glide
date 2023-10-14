@@ -3,7 +3,7 @@ import { useDisabled, useLoading } from "@enymo/react-form-component";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
 import { Stylesheet } from "../Stylesheet";
-import { ButtonVariantStyle, DefaultElementProps, GlideButtonConfig, WithoutPrivate } from "../types";
+import { ButtonVariantStyle, GlideButtonConfig, NonOptional, WithoutPrivate } from "../types";
 
 const globalStyle = new Stylesheet();
 
@@ -36,13 +36,13 @@ globalStyle.apply();
 
 let glideCounter = 0;
 
-export interface ButtonProps<Variants extends string> extends ClickableProps {
+export interface ButtonProps<Variants extends string> extends Omit<ClickableProps, "children"> {
     variant?: WithoutPrivate<Variants>,
     loading?: boolean,
     flex?: number
 }
 
-export default <Variants extends string, ElementProps extends DefaultElementProps>(config: GlideButtonConfig<Variants, ElementProps>) => {
+export default (<Variants extends string, ElementProps extends {}>(config: GlideButtonConfig<Variants, ElementProps>) => {
     const glideClassName = `glide-button-${++glideCounter}`;
     const style = new Stylesheet();
     const rule = style.addRule(`.${glideClassName}`, config.style);
@@ -112,7 +112,6 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
         onClick,
         flex,
         style,
-        children,
         linkType,
         to,
         ...props
@@ -142,7 +141,7 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
                 {...props}
             >
                 <div className="content">
-                    {config.element ? React.createElement(config.element, { children, variant, ...props } as ElementProps) : children}
+                    {config.element ? React.createElement(config.element, { variant, ...props } as unknown as ElementProps) : (props as unknown as {children: React.ReactNode}).children}
                 </div>
                 <div className="loading-wrap">
                     {config.loader}
@@ -150,4 +149,7 @@ export default <Variants extends string, ElementProps extends DefaultElementProp
             </Clickable>
         )
     }
+}) as {
+    <Variants extends string, ElementProps extends {}>(config: Omit<GlideButtonConfig<Variants, ElementProps>, "element">): React.FC<ButtonProps<Variants> & {children: React.ReactNode}>,
+    <Variants extends string, ElementProps extends {}>(config: NonOptional<GlideButtonConfig<Variants, ElementProps>, "element">): React.FC<ButtonProps<Variants> & ElementProps>
 }

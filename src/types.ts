@@ -1,6 +1,8 @@
 
 export type Copy<T> = T extends infer K ? K extends T ? K : never : never; // Typescript horribleness that basically copies T into K so that T is inferred from the object keys and not the extends-Property
 export type WithoutPrivate<T extends string> = T extends `${"."}${infer _}` ? never : T;
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+export type NonOptional<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 
 interface ButtonStyle {
     /**
@@ -32,18 +34,13 @@ export interface ButtonVariantStyle<Variants extends string> extends ButtonStyle
     responsive?: ButtonResponsiveStyle[]
 }
 
-export interface DefaultElementProps {
-    variant?: string,
-    children: React.ReactNode
-}
-
 interface ButtonResponsiveStyle extends ButtonStyle {
     width: number,
     mode: "min" | "max",
     loaderPadding?: string,
 }
 
-export interface GlideButtonConfig<Variants extends string, ElementProps extends DefaultElementProps> extends ButtonStyle {
+export interface GlideButtonConfig<Variants extends string, ElementProps extends {}> extends ButtonStyle {
     /**
      * Class(es) to always be added to this button.
      */
