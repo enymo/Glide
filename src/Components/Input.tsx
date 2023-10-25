@@ -93,6 +93,7 @@ function addInputRules(rule: StyleRule, styles: InputStyle & {
         flexDirection: "column",
     });
     inputLabelWrapRule.addRule(".select-indicator", {
+        position: "absolute",
         right: 0,
         top: "50%",
         transform: "translateY(-50%)",
