@@ -250,6 +250,10 @@ export interface ChoiceStyle {
      */
     childrenHorizontalAlignment?: "flex-start" | "center" | "flex-end",
     /**
+     * Style to be applied to the label when not using custom element. If custom element is specified, this settings does nothing.
+     */
+    labelStyle?: React.CSSProperties
+    /**
      *  The position of the error text.
      */
     errorPosition?: "inside" | "under",

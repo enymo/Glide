@@ -1,13 +1,13 @@
+import { useDisabled } from "@enymo/react-form-component";
+import classNames from "classnames";
+import _ from "lodash";
 import React, { useMemo } from "react";
 import { RegisterOptions, useFormContext } from "react-hook-form";
+import { useError } from "../Hooks/ErrorContext";
 import { StyleRule, Stylesheet } from "../Stylesheet";
 import { ChoiceStyle, GlideChoiceConfig } from "../types";
-import classNames from "classnames";
-import { useDisabled } from "@enymo/react-form-component";
-import _ from "lodash";
 import { useCheckboxList } from "./CheckboxList";
 import { useRadioGroup } from "./RadioGroup";
-import { useError } from "../Hooks/ErrorContext";
 
 let glideCounter = 0;
 
@@ -75,6 +75,7 @@ function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
         gap: styles.childrenGap,
         flexDirection: styles.indicator?.childrenPosition === "left" ? "row-reverse" : "row",
         flex: 1,
+        ...styles.labelStyle
     });
 
     labelWrapperRule.addRule(".label", {
@@ -82,6 +83,7 @@ function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
         alignItems: styles.childrenVerticalAlignment,
         justifyContent: styles.childrenHorizontalAlignment,
         flex: 1,
+
     });
     const errorComponentRule = rule.addRule(".error-component", {
         display: "flex",
