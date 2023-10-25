@@ -123,12 +123,7 @@ export interface InputStyle {
      * top: 50%;
      * transform: translateY(-50%)
      */
-    selectIndicatorStyle?: {
-        /** The element to be rendered */
-        element: React.ReactNode,
-        
-        style: React.CSSProperties
-    }
+    selectIndicatorStyle?: React.CSSProperties
 }
 
 interface InputResponsiveStyle extends InputStyle {
