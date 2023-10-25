@@ -60,15 +60,20 @@ export type InputProps<PrefixProps, SuffixProps> = {
     /**
      * The type of the input. Defaults to "text".
      */
-    type?: HTMLInputTypeAttribute | "textarea",
+    type?: HTMLInputTypeAttribute | "textarea" | "select",
     /**
      * The options for the react-hook-form register function.
      */
     options?: RegisterOptions,
+    /**
+     * Only used for select-type inputs to specify options. On other input types, this prop is ignored
+     */
+    children?: React.ReactNode
 } & PrefixProps & SuffixProps;
 
 function addInputRules(rule: StyleRule, styles: InputStyle & {
     labelPosition?: InputLabelPosition,
+    selectIndicator?: React.FC
 }, responsiveRules: boolean = false) {
     const inputRowRule = rule.addRule(".input-row", !responsiveRules ? {
         display: "flex",
@@ -82,12 +87,18 @@ function addInputRules(rule: StyleRule, styles: InputStyle & {
         ...styles.style
     });
     const inputLabelWrapRule = inputWrapRule.addRule(".inside-label-wrap", responsiveRules ? undefined : {
+        position: "relative",
         display: "flex",
         flex: 1,
         flexDirection: "column",
     });
-
-    inputLabelWrapRule.addRule(".input", responsiveRules ? {
+    inputLabelWrapRule.addRule(".select-indicator", {
+        right: 0,
+        top: "50%",
+        transform: "translateY(-50%)",
+        ...styles.selectIndicatorStyle
+    });
+    const inputRule = inputLabelWrapRule.addRule(".input", responsiveRules ? {
         padding: styles.inputPadding,
     } : {
         border: "none",
@@ -95,8 +106,12 @@ function addInputRules(rule: StyleRule, styles: InputStyle & {
         backgroundColor: "transparent",
         flex: 1,
         padding: styles.inputPadding ?? "0",
+        ...(styles.selectIndicator ? {
+            appearance: "none"
+        } : {})
     });
-    inputLabelWrapRule.addRule(".input::placeholder", styles.labelPosition === "placeholder" ? styles.labelStyle : styles.placeholderStyle);
+    inputRule.addRule("&::placeholder", styles.labelPosition === "placeholder" ? styles.labelStyle : styles.placeholderStyle);
+    
 
     inputWrapRule.addRule("&:hover", styles.hoverStyle);
     inputWrapRule.addRule("&:focus-within:not(.error)", styles.focusStyle);
@@ -158,10 +173,11 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         error: errorProp,
         type = "text",
         options,
+        children,
         ...props
     }: InputProps<PrefixProps, SuffixProps>) => {
 
-        const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>();
+        const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>();
         const handleWrapperClick = useCallback(() => inputRef.current?.focus(), [inputRef]);
 
         const form = useFormContext();
@@ -186,7 +202,27 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
                             {label && (
                                 <span className={classNames("input-label", "inside-top-label")}>{label}</span>
                             )}
-                            {React.createElement(type == "textarea" ? "textarea" : "input", {
+                            {type === "select" ? <>
+                                <select
+                                    ref={e => {
+                                        registerRef?.(e);
+                                        if (e) {
+                                            inputRef.current = e;
+                                        }
+                                    }}
+                                    className={classNames("input", { error })}
+                                    name={name}
+                                    value={value}
+                                    onChange={e => onChange?.(e.target.value)}
+                                    disabled={disabled}
+                                    {...register}
+                                >
+                                    {children}
+                                </select>
+                                {config.selectIndicator && React.createElement(config.selectIndicator, {
+                                    className: "select-indicator"
+                                })}
+                            </> : React.createElement(type == "textarea" ? "textarea" : "input", {
                                 ref: (e: HTMLInputElement | HTMLTextAreaElement) => {
                                     registerRef?.(e);
                                     inputRef.current = e;

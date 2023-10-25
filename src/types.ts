@@ -117,6 +117,18 @@ export interface InputStyle {
      * The gap between the input and the error text.
      */
     errorGap?: string,
+    /** 
+     * The style for the select indicator.
+     * Note: The following CSS-Properties are automatically applied to the element, but may be overridden by specifiying them again in the style:
+     * top: 50%;
+     * transform: translateY(-50%)
+     */
+    selectIndicatorStyle?: {
+        /** The element to be rendered */
+        element: React.ReactNode,
+        
+        style: React.CSSProperties
+    }
 }
 
 interface InputResponsiveStyle extends InputStyle {
@@ -159,6 +171,11 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> extends InputStyle {
      * The props of the passed component are added to the props of the `Input` component.
      */
     suffix?: React.FC<SuffixProps>,
+    /**
+     * The indicator to be rendered when input is a select. Usually used for the appearance of the dropdown chevron.
+     * If this is specified, the default dropdown chevron is automatically hidden
+     */
+    selectIndicator?: React.FC<{className?: string}>
 }
 
 export interface ChoiceStyle {
