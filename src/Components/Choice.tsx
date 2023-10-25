@@ -75,7 +75,6 @@ function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
         gap: styles.childrenGap,
         flexDirection: styles.indicator?.childrenPosition === "left" ? "row-reverse" : "row",
         flex: 1,
-        ...styles.labelStyle
     });
 
     labelWrapperRule.addRule(".label", {
@@ -83,7 +82,7 @@ function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
         alignItems: styles.childrenVerticalAlignment,
         justifyContent: styles.childrenHorizontalAlignment,
         flex: 1,
-
+        ...styles.labelStyle
     });
     const errorComponentRule = rule.addRule(".error-component", {
         display: "flex",
