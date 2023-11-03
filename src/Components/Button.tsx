@@ -120,7 +120,7 @@ export default (<Variants extends string, ElementProps extends {}>(config: Glide
         const loadingContext = useLoading();
         const [loadingState, setLoadingState] = useState(false);
 
-        const disabled = disabledProp ?? loadingProp ?? loadingState ?? disabledContext ?? loadingContext ?? false;
+        const disabled = disabledProp ?? loadingProp  ?? disabledContext ?? loadingContext ?? loadingState;
         const loading = config.loader ? (loadingProp ?? (submit && loadingContext) ?? loadingState ?? false) : false;
 
         const handleClick: React.MouseEventHandler = useCallback(async e => {
