@@ -108,6 +108,7 @@ function addInputRules(rule: StyleRule, styles: InputStyle & {
         flex: 1,
         padding: styles.inputPadding ?? "0",
         fontSize: "inherit",
+        width: "100%",
         ...(styles.selectIndicator ? {
             appearance: "none"
         } : {})
