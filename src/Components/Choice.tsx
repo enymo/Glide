@@ -74,13 +74,11 @@ function addChoiceRules(rule: StyleRule, styles: ChoiceStyle) {
         display: "flex",
         gap: styles.childrenGap,
         flexDirection: styles.indicator?.childrenPosition === "left" ? "row-reverse" : "row",
+        alignItems: styles.childrenVerticalAlignment,
         flex: 1,
     });
 
     labelWrapperRule.addRule(".label", {
-        display: "flex",
-        alignItems: styles.childrenVerticalAlignment,
-        justifyContent: styles.childrenHorizontalAlignment,
         flex: 1,
         ...styles.labelStyle
     });
