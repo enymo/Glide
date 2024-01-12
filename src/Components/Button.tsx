@@ -125,8 +125,12 @@ export default (<Variants extends string, ElementProps extends {}>(config: Glide
 
         const handleClick: React.MouseEventHandler = useCallback(async e => {
             setLoadingState(true);
-            await onClick?.(e);
-            setLoadingState(false);
+            try {
+                await onClick?.(e);
+            }
+            finally {
+                setLoadingState(false);
+            }
         }, [setLoadingState, onClick]);
 
         return (
