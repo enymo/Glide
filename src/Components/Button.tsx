@@ -70,8 +70,9 @@ export default (<Variants extends string, ElementProps extends {}>(config: Glide
 
         for (const [variant, variantConfig] of Object.entries<ButtonVariantStyle<Variants>>(config.variants)) {
             const variantRule = rule.addRule(dependencies[variant].map(variant => `&.${variant}`), variantConfig.style);
-            variantRule.addRule("&:hover", variantConfig.hoverStyle);
-            variantRule.addRule("&:active", variantConfig.clickStyle);
+            variantRule.addRule("&:hover:not(.disabled)", variantConfig.hoverStyle);
+            variantRule.addRule("&:active:not(.disabled)", variantConfig.clickStyle);
+            variantRule.addRule("&.disabled", variantConfig.disabledStyle);
             if (variantConfig.responsive) {
                 for (const { mode, width, ...styles } of variantConfig.responsive) {
                     const mediaRule = style.addMediaRule([{ mode, width }]);
@@ -101,7 +102,7 @@ export default (<Variants extends string, ElementProps extends {}>(config: Glide
         }
     }
 
-    style.apply();
+    style.apply(config.debug);
 
     return ({
         className,

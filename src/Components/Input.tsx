@@ -161,7 +161,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         }
     }
 
-    style.apply();
+    style.apply(config.debug);
 
     return ({
         name,

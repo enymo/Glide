@@ -69,7 +69,11 @@ export interface GlideButtonConfig<Variants extends string, ElementProps extends
     /**
      * Styles which are applied when the width and mode match.
      */
-    responsive?: ButtonResponsiveStyle[]
+    responsive?: ButtonResponsiveStyle[],
+    /**
+     * Whether the components logs debug information (eg. the styles applied) to the console.
+     */
+    debug?: boolean
 }
 
 export interface InputStyle {
@@ -170,7 +174,11 @@ export interface GlideInputConfig<PrefixProps, SuffixProps> extends InputStyle {
      * The indicator to be rendered when input is a select. Usually used for the appearance of the dropdown chevron.
      * If this is specified, the default dropdown chevron is automatically hidden
      */
-    selectIndicator?: React.FC<{className?: string}>
+    selectIndicator?: React.FC<{className?: string}>,
+    /**
+     * Whether the components logs debug information (eg. the styles applied) to the console.
+     */
+    debug?: boolean
 }
 
 export interface ChoiceStyle {
@@ -256,7 +264,7 @@ export interface ChoiceStyle {
     /**
      *  The position of the error text.
      */
-    errorPosition?: "inside" | "under",
+    errorPosition?: "inside" | "under"
 }
 
 interface ChoiceResponsiveStyle extends ChoiceStyle {
@@ -281,6 +289,10 @@ export interface GlideChoiceConfig<ElementProps> extends ChoiceStyle {
      * A custom component to display the error. It is passed the error as a prop.
      */
     errorComponent?: React.FC<{ error: string }>,
+    /**
+     * Whether the components logs debug information (eg. the styles applied) to the console.
+     */
+    debug?: boolean
 }
 
 export interface GlideChoiceGroupConfig {
@@ -288,4 +300,8 @@ export interface GlideChoiceGroupConfig {
     errorComponent?: React.FC<{ error: string }>,
     errorGap?: string,
     flexDirection?: "row" | "column",
+    /**
+     * Whether the components logs debug information (eg. the styles applied) to the console.
+     */
+    debug?: boolean
 }

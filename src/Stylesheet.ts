@@ -78,9 +78,13 @@ export class Stylesheet {
         return rule;
     }
 
-    public apply() {
+    public apply(debug: boolean = false) {
         const style = document.createElement("style");
         document.head.appendChild(style);
+        if (debug) {
+            console.log("CSS Stylesheet:", style.sheet);
+            console.log("Rules in this stylesheet:", this.rules);
+        }
         for (const rule of this.rules) {
             rule.addToStylesheet(style.sheet!);
         }

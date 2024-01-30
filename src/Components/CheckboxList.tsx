@@ -44,7 +44,7 @@ export default (config: GlideChoiceGroupConfig) => {
 
     rule.addRule(".error", config.errorStyle);
 
-    style.apply();
+    style.apply(config.debug);
 
     return <T extends string | number>({
         name,

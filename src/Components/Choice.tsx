@@ -166,7 +166,7 @@ export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelPr
         }
     }
 
-    style.apply();
+    style.apply(config.debug);
 
     return ({
         name,
