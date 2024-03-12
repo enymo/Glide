@@ -1,16 +1,16 @@
 import useHybridInput from "@enymo/react-hybrid-input-hook";
+import classNames from "classnames";
 import React, { createContext, useContext } from "react";
 import { RegisterOptions } from "react-hook-form";
 import { ErrorProvider } from "../Hooks/ErrorContext";
 import { Stylesheet } from "../Stylesheet";
 import { GlideChoiceGroupConfig } from "../types";
-import classNames from "classnames";
 
 let glideCounter = 0;
 
 const Context = createContext<{
     value: (string | number)[],
-    toggle: (names: string | number | (string | number)[]) => void
+    toggle: (names: string | number) => void
 } | null>(null);
 export const useCheckboxList = () => useContext(Context);
 
@@ -62,18 +62,8 @@ export default (config: GlideChoiceGroupConfig) => {
 
         const error = errorProp ?? formError?.message;
 
-        const handleToggle = (names: T | T[]) => {
-            const add: T[] = [];
-            const remove: T[] = [];
-            for (const name of Array.isArray(names) ? names : [names]) {
-                if (value.includes(name)) {
-                    remove.push(name);
-                }
-                else {
-                    add.push(name);
-                }
-            }
-            onChange([...value.filter(value => !remove.includes(value)), ...add]);
+        const handleToggle = (name: T) => {
+            onChange(value.includes(name) ? value.filter(value => value !== name) : [...value, name]);
         }
 
         const content = (

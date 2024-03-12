@@ -1,10 +1,10 @@
-import React, { createContext, useCallback, useContext } from "react";
-import { RegisterOptions, useController, useForm, useFormContext } from "react-hook-form";
+import useHybridInput from "@enymo/react-hybrid-input-hook";
+import classNames from "classnames";
+import React, { createContext, useContext } from "react";
+import { RegisterOptions } from "react-hook-form";
 import { ErrorProvider } from "../Hooks/ErrorContext";
 import { Stylesheet } from "../Stylesheet";
 import { GlideChoiceGroupConfig } from "../types";
-import classNames from "classnames";
-import useHybridInput from "@enymo/react-hybrid-input-hook";
 
 let glideCounter = 0;
 

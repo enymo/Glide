@@ -3,5 +3,6 @@ export { default as createGlideCheckboxList, useCheckboxList } from "./Component
 export { default as createGlideChoice } from "./Components/Choice";
 export { default as createGlideInput } from "./Components/Input";
 export { default as createGlideRadioGroup, useRadioGroup } from "./Components/RadioGroup";
+export * from "./util";
 
 export type { GlideButtonConfig, GlideChoiceConfig, GlideChoiceGroupConfig, GlideInputConfig } from "./types";
