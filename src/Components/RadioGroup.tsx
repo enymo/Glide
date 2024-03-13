@@ -40,6 +40,7 @@ export default (config: GlideChoiceGroupConfig) => {
     rule.addRule(">div:first-child", {
         display: "flex",
         flexDirection: config.flexDirection ?? "column",
+        ...config.style
     })
 
     rule.addRule(".error", config.errorStyle);
@@ -72,7 +73,7 @@ export default (config: GlideChoiceGroupConfig) => {
         if (handlesError) {
             return (
                 <div className={classNames(glideClassName, className)}>
-                    <div style={{ ...config.style, gap, flexDirection }}>
+                    <div style={{gap, flexDirection }}>
                         {content}
                     </div>
                     {error && (
