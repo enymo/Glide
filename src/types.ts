@@ -301,6 +301,11 @@ export interface GlideChoiceGroupConfig {
     errorGap?: string,
     flexDirection?: "row" | "column",
     /**
+     * The style to be applied to the choice group. Only effective when the group handles errors,
+     * as is doesn't render any markup that could be styled otherwise.
+     */
+    style?: React.CSSProperties
+    /**
      * Whether the components logs debug information (eg. the styles applied) to the console.
      */
     debug?: boolean

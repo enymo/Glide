@@ -72,7 +72,7 @@ export default (config: GlideChoiceGroupConfig) => {
         if (handlesError) {
             return (
                 <div className={classNames(glideClassName, className)}>
-                    <div style={{ gap, flexDirection }}>
+                    <div style={{ ...config.style, gap, flexDirection }}>
                         {content}
                     </div>
                     {error && (
