@@ -66,6 +66,22 @@ export type InputProps<PrefixProps, SuffixProps> = {
      */
     options?: RegisterOptions,
     /**
+     * The minimum value of a number input. On other input types, this prop is ignored
+     */
+    min?: number,
+    /**
+     * The maximum value of a number input. On other input types, this prop is ignored
+     */
+    max?: number
+    /**
+     * The step of a number input. On other input types, this prop is ignored
+     */
+    step?: number
+    /**
+     * The number of rows of a textarea. On other input types, this prop is ignored
+     */
+    rows?: number
+    /**
      * Only used for select-type inputs to specify options. On other input types, this prop is ignored
      */
     children?: React.ReactNode
@@ -177,6 +193,9 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         type = "text",
         options,
         children,
+        min,
+        max,
+        rows,
         ...props
     }: InputProps<PrefixProps, SuffixProps>) => {
 
@@ -237,6 +256,9 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
                                 value,
                                 onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange?.(e.target.value),
                                 disabled,
+                                min,
+                                max,
+                                rows,
                                 ...register,
                             })}
                         </div>
