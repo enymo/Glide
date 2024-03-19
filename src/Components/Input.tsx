@@ -205,6 +205,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
         const form = useFormContext();
         const disabledContext = useDisabled();
         const disabled = disabledProp ?? disabledContext ?? false;
+        const hasError = errorProp !== undefined || (name ? _.get(form?.formState.errors, name!) !== undefined : false);
         const error = errorProp ?? name ? _.get(form?.formState.errors, name!)?.message as string : undefined;
 
         const { ref: registerRef, ...register } = name && form ? form.register(name, disabled ? undefined : options) : { ref: undefined };
@@ -218,7 +219,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
                     {label && (
                         <span className={classNames("input-label", "outside-left-label")}>{label}</span>
                     )}
-                    <div className={classNames("input-wrap", { error, disabled })} onClick={handleWrapperClick}>
+                    <div className={classNames("input-wrap", { error: hasError, disabled })} onClick={handleWrapperClick}>
                         {config.prefix && React.createElement(config.prefix, props as PrefixProps)}
                         <div className="inside-label-wrap">
                             {label && (
@@ -249,7 +250,7 @@ export default <PrefixProps extends object, SuffixProps extends object>(config: 
                                     registerRef?.(e);
                                     inputRef.current = e;
                                 },
-                                className: classNames("input", { error }),
+                                className: classNames("input", { error: hasError }),
                                 type,
                                 name,
                                 placeholder: config.labelPosition == "placeholder" ? label : placeholder,
