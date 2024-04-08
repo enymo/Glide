@@ -225,7 +225,7 @@ export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelPr
                     <div className="label-wrapper">
                         {config.indicator && <div className="indicator">{config.indicator.element}</div>}
                         {config.element ? (
-                            React.createElement(config.element, props as LabelProps)
+                            React.createElement(config.element, {...props, children} as LabelProps)
                         ) : (<span className="label">{children}</span>)}
                     </div>
                     {error && <div className={classNames("error-component", "inside")}>{errorComponent}</div>}
