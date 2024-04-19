@@ -193,13 +193,13 @@ export default <LabelProps extends object>(configProp: GlideChoiceConfig<LabelPr
 
         const { onChange: onChangeForm, ...register } = (name && form && !listContext) ? form.register(name, disabled ? undefined : options) : { onChange: undefined };
 
-        const checked = checkedProp ?? ( listContext && value ? (
+        const checked = checkedProp ?? ( listContext && value !== undefined ? (
             Array.isArray(listContext.value) ? listContext.value.includes(value) : listContext.value === value
         ) : undefined);
 
         const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
             onChangeProp?.(e.target.checked);
-            value && listContext?.toggle(value);
+            value !== undefined && listContext?.toggle(value);
             onChangeForm?.(e);
         }
 
